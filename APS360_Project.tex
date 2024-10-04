@@ -14,6 +14,8 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{graphicx}
+\usepackage{enumitem}
+
 
 %######## APS360: Put your project Title here
 \title{Formatting Instructions for APS360 Project  \\ 
@@ -250,16 +252,16 @@ As such, our project will help enable human writers to be better poets, while ra
 
 \section{Background \& Related Work}
 Previous poetry generation models utilized Recurrent Neural Networks (RNN) with some form of memory limiting to generate poems off a large dataset.\\\\
-One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, (Novikova \#4).\\\\
+One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, \citep{novikovaenglish}.\\\\
 Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) for encoding, one RNN for creating hidden context parameters,
-and another RNN with a separate weight vector for modifying the final output (Zhang \#4-5).
+and another RNN with a separate weight vector for modifying the final output \citep{zhang2014chinese}.
 The output of this model was particularly compelling, with human ratings for the generated poems being over 75\% of the ratings given to human written poems.\\\\
-Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words (City, University of London \#7).
+Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.
 This model’s poems were incredibly convincing, with 56\% of polled individuals believing the AI generated poems were written by humans.\\\\
-When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well (Aguiar \#7). 
+When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well \citep{haikugeneration}. 
 For this model human evaluators gave the AI generated haikus an average quality score that was over 80\% of the average score given to human poems. This model only used a single RNN with LSTM. 
 Granted, the evaluations were only done by 8 individuals, but the strength of RNNs for this kind of task is evident.\\\\
-Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems (Popescu-Belis \#4-5).
+Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}.
 This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met. 
 It also enabled the user to specify emotional tone by encoding category preferences (happy, sad, etc.) into a weighted vector that was then used after generating a line to swap out words that didn’t fit the categories well with words that did.\\\\
 This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category. 
@@ -269,14 +271,59 @@ Our model will utilize many of these techniques, though the exact extent is stil
 
 \section{Data Processing}
 
+The data we have gathered consists of two datasets collected from Kaggle. One contains over 115,000 haikus in English and their meter \citep{Jhalani_2020}. The second one is composed of approximately 130.000 words in the English dictionary \citep{Schwartz_2022} and will serve as a starting point for the language model to gather words from it. From the haiku database, we will only take the ones with a 5-7-5 structure so that we have a more rigid definition of a haiku our model can hopefully learn.  In terms of data processing, we will parse the CSV files and extract the poem’s text and meter. By the end, we will be left with only the haikus who follow the 5-7-5 structure and a list of all the words in the English language along with their syllables.
+
+The data processing of the poems will then follow these steps:
+
+\begin{enumerate}
+    \item Remove the unused columns of data.
+    \begin{enumerate}[label=\alph*)] % Nested list with lowercase letters
+        \item Remove the columns that are not relevant for our purposes. The CSV file for haikus will only have the poem and meter field.
+        \item In the dictionary dataset, this means removing all the columns except for “word” and “syllable count”. This dataset is now processed.
+    \end{enumerate}
+    \item Filter the poems.
+    \begin{enumerate}[label=\alph*)]
+        \item Remove the rows that contain poems whose tags aren’t related to one of the “genres” we will work on. The related tags are to be manually selected. For the haikus, this removes all the haikus that do not have the 5-7-5 structure.
+    \end{enumerate}
+\end{enumerate}
+
 
 \section{Architecture}
+For this project, we have chosen the Long Short-Term Memory (LSTM) model, which is based on a Recurrent Neural Network (RNN).\\\\
+
+An LSTM model is a modified version of an RNN that is especially good when it comes to remembering past data that was entered.
+One of the issues present in many RNN models is called the vanishing gradient, which occurs when the gradients become extremely small as they are back-propagated during training.
+This is can occur due to the activation functions having derivatives less than 1 (or equal to zero in the case of dead neurons using ReLu activations), 
+but it can also happen simply because the weights used as coefficients in many of the derivative terms in backpropagation are relatively small, 
+so the number of distinct terms in the sum for any one gradient (equal to the number of distinct paths from one node to the output) ends up being exponentially smaller than the size of each individual term.
+This is unavoidable if the weights are kept small enough to prevent the opposite problem, where gradients explode due to each individual term not shrinking fast enough to account for the massive increase in terms.
+This is especially problematic in RNNs because each new term processed during training essentially creates a new layer, so as time goes on, each chain of partial derivatives decreases exponentially faster than the number of chains increases, and the gradient tends to zero.
+LSTM will address this issue by changing the RNN so it doesn’t create new layers.
+Instead, a new vector called the cell state will be made, likely with the same dimensionality as the hidden state vector, 
+and it will be updated at each time step using forget and input “gates”.
+These gates will be separate neural network layers (likely with low depth) that use the new inputs and previous hidden states to increase or decrease certain values in the cell state to represent “forgetting” or “learning” new information.
+Then an “output gate”, which is another neural network (of relatively low depth) takes in the modified cell state to calculate the new hidden state, which can be used with the next input to begin the modification process all over again.
+These gates have to be trained with backpropagation, and they are limited in the quantity of information they can encode, but they fix the error of vanishing gradients because now the number of layers is constant during training since the “memory” of the training is encoded in a finite vector.\\\\
+
+Beyond using LSTM, our model will incorporate a vectorization algorithm that will originally be a pre-trained Convolutional Neural Network (CNN), but that we may replace with an untrained one that we include in the backpropagation training.
+The output of the RNN will be a logit, which we will transform with a softmax function to create a probability distribution to choose the next word in the haiku.
+Newline characters will be part of the corpus of words so that the outputted poems span multiple lines.
+The softmax function will incorporate truncation into our softmax model to improve word selection.
+The network will be forced to output lines multiple times if it fails to meet syntax requirements, and we will algorithmically choose the output that matches our format most closely.
+Finally, if time permits, we will incorporate category labels into our training dataset and utilize word frequency lists between categories to dynamically swap out words post-line generation to push the topics in the direction the user specifies.
+If possible, we’ll also incorporate this word frequency weighting into the final softmax function to prioritize words that more closely match the theme.
 
 
 \section{Baseline Model}
 
-We will be comparing our model against a Markov chain based text generation algorithm. The specific instance we will derive this from is \cite{haikugeneration}.
-Markov chain based algorithms for text generation were one of the more common methods before neural network based models became a viable option. By starting with a body of text, the algorithm creates a probability map of which words are most likely to follow one another, and through a starting word or phrase, the algorithm recursively finds the most likely word to appear next in a sentence based on the previous word until a desired length is achieved. These algorithms are usually simple and highly performant, however, because they are only able to capture local patterns, Markov based algorithms are limited in scope and have a lack of coherence over longer passages. Comparing our neural network model against a Markov chain algorithm will demonstrate the difference in sophistication we are able to achieve using a more modern approach, and how it changes over various generated passages.
+We will be comparing our model against a Markov chain based text generation algorithm.
+The specific instance we will derive this from is \citep{haikugeneration}.\\\\
+Markov-chain based algorithms for text generation were one of the more common methods before neural network based models became a viable option.
+By starting with a body of text, the algorithm creates a probability map of which words are most likely to follow one another, 
+and through a starting word or phrase, the algorithm recursively finds the most likely word to appear next in a sentence based on the previous word until a desired length is achieved.\\\\
+These algorithms are usually simple and highly performant, however, because they are only able to capture local patterns, Markov based algorithms are limited in scope and have a lack of coherence over longer passages. 
+Comparing our neural network model against a Markov chain algorithm will demonstrate the difference in sophistication we are able to achieve using a more modern approach, 
+and how it changes over various generated passages.
 
 
 \section{Ethical Considerations}
