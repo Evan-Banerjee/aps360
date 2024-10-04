@@ -231,7 +231,7 @@ Soma             &Cell body (contains cell nucleus) \\
 
 \section{Baseline Model}
 
-We will be comparing our model against a Markov chain based text generation algorithm. The specific instance we will derive this from is.
+We will be comparing our model against a Markov chain based text generation algorithm. The specific instance we will derive this from is \cite{haikugeneration}.
 Markov chain based algorithms for text generation were one of the more common methods before neural network based models became a viable option. By starting with a body of text, the algorithm creates a probability map of which words are most likely to follow one another, and through a starting word or phrase, the algorithm recursively finds the most likely word to appear next in a sentence based on the previous word until a desired length is achieved. These algorithms are usually simple and highly performant, however, because they are only able to capture local patterns, Markov based algorithms are limited in scope and have a lack of coherence over longer passages. Comparing our neural network model against a Markov chain algorithm will demonstrate the difference in sophistication we are able to achieve using a more modern approach, and how it changes over various generated passages.
 
 
