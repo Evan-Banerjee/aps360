@@ -100,6 +100,8 @@ def main():
     )
     print("Model loaded successfully.")
 
+    # comment here
+
     test_file = "test_data/output_test.txt"
     output_file = "test_data/sample_haikus_output.txt"
 
@@ -129,7 +131,7 @@ def main():
     plt.show()
 
 
-
+    # Uncomment below and comment above up to "comment here" mark to give your own input
     # # Step 3: Prompt for haiku generation
     # prompt = input("Enter a prompt for haiku generation: ").strip()
     # if not prompt:
