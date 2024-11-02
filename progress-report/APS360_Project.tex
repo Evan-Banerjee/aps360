@@ -269,8 +269,7 @@ slow training times.
 Because of irregularities in the English Language, we found it difficult to
 come up with a reliable method to count the number of syllables in a given word. Our current solution involves referencing 
 the CMU Pronouncing Dictionary \citep{cmu_pronouncing_dictionary} to get the syllable count of a given word. 
-However, this method is not perfect, as the CMU Pronouncing Dictionary does not contain all words that may show up in our vocabulary, 
-and some words have multiple pronunciations with different syllable counts.
+However, this method is not perfect, as the CMU Pronouncing Dictionary does not contain all words that may show up in our vocabulary.
 This causes issues when a word is not in the dictionary, so we are looking to integrate algorithms that can help resolve this, although this still only provides an approximation which can lead to slight issues during generation.
 
 The slow training times were due to the large amount of data and limited access to compute resources. We tested differing batch sizes to reach a reasonable training time given our resources, however we are looking into ways to gain access to more powerful GPUs to speed up training.
