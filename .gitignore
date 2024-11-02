@@ -16,3 +16,7 @@ APS360_Project_Proposal.fls
 APS360_Project_Proposal.out
 APS360_Project_Proposal.synctex.gz
 .idea
+models
+test_data/haikus2.txt
+test_data/haikus2-cleaned.txt
+test_data/haikus_unique.csv
