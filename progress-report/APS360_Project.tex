@@ -14,6 +14,7 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{graphicx}
+\usepackage{multicol}
 
 %######## APS360: Put your project Title here
 \title{Poetry Through Propogation,\ Generating Haikus With Deep Learning Recurrent Neural Networks}
@@ -140,22 +141,49 @@ heading and 1/2~line space after the third level heading.
 
 These instructions apply to everyone, regardless of the formatter being used.
 
-\subsection{Citations within the text}
+\subsection{Data Processing}
+The main data used for this project consists of the haiku4u dataset in kaggle.
+This dataset is publicly available and comes from a web scraper run in October 2023.
+The data comes in the form of a csv file which has the following fields:
+Haiku, a field containing the entire haiku with lines separated by a ”$|$” character;
+Domain, the name of the web page where it was originally found;
+Domains, the amount of times this specific haiku was encountered while scraping the web.
+Another data source we used is the CMU pronouncing dictionary.
+We use this dictionary to count the amount of syllables in each line of the haiku.
+Given that this is an open source project with a python library, data cleanup was minimal for this dataset.
 
-Citations within the text should be based on the \texttt{natbib} package
-and include the authors' last names and year (with the ``et~al.'' construct
-for more than two authors). When the authors or the publication are
-included in the sentence, the citation should not be in parenthesis using \verb|\citet{}| (as
-in ``See \citet{Hinton06} for more information.''). Otherwise, the citation
-should be in parenthesis using \verb|\citep{}| (as in ``Deep learning shows promise to make progress
-towards AI~\citep{Bengio+chapter2007}.'').
 
-The corresponding references are to be listed in alphabetical order of
-authors, in the \textsc{References} section. As to the format of the
-references themselves, any style is acceptable as long as it is used
-consistently.
+After downloading the data, the cleaning process for the haiku dataset consists is run by a python script.
+This python script takes in each row of the csv file, and removes all the rows that do not contain a haiku.
+Then, it splits the haiku into its three lines based on where the $|$ delimiter can be found.
+And finally, it appends the haiku to a text file in which the end of a haiku is denoted by two new line characters.
+The text file is then used at training when loading the data.
+Below is an example of the raw input data, and its processed form.
 
-To cite a new paper, first, you need to add that paper's BibTeX information to \verb+APS360_ref.bib+ file and then you can use the \verb|\citep{}| command to cite that in your main document. 
+
+
+\begin{multicols}{2}
+
+  \textbf{Original (Raw text):} \par
+  Yesterday it worked.$|$Today it is not working.$|$Windows is
+  like that.,richardneill.org,27,
+  https://richardneill.org/humour.php,27,19
+
+  \columnbreak
+
+  \raggedleft
+  \textbf{Finalized (After cleaning):} \par
+
+  \raggedleft
+  Yesterday it worked.
+
+  Today it is not working.
+
+  Windows is like that.
+\end{multicols}
+
+Another use of the data is in building the vocabulary before training.
+To do this
 
 \subsection{Primary Model}
 
@@ -223,7 +251,7 @@ We tested out model with 300 one or two word prompts to the model, and counted t
 \label{fig:plot}
 \end{figure}
 
-As we can see in Figure~\ref{fig:plot}, the vast majority of generated haikus are between 17 and 19 sylalbles, with a few outliers. 
+As we can see in Figure~\ref{fig:plot}, the vast majority of generated haikus are between 17 and 19 sylalbles, with a few outliers.
 These can be explained by either the model incorrectly counting syllables from words that are not
 in the CMU Pronouncing Dictionary \citep{cmu_pronouncing_dictionary}, or the syllable counting algorithm
 miscounting on the output.
