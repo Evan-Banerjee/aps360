@@ -196,6 +196,77 @@ Some examples of how we could do this are concatenating this data set with other
 and scraping the web ourselves in the hopes we find many more haikus that were not seen originally in 2023.
 
 
+\subsection{Baseline Model}
+
+Our first main baseline model is a markov chain of depth four. This was trained on the same data used in the primary model.
+The main structure is shown in figure 0:
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/MARKOV.png}
+  \end{center}
+  \caption{general weighting scheme for markov chain}
+  \label{fig:plot}
+  \end{figure}
+
+Each individual word in the corpora is assigned a weighting scheme for every word (including itself) based on how frequently those other words come 
+after the first word.\\
+Then every pair of words is assigned a weighting scheme for every word in the corpora based on how likely the word appears after the pair.\\
+Then every triple of words is assigned a similar weighting scheme.\\
+This repeats until you have a weighting scheme for every n-gram sequence of words up to the depth provided by the function.\\
+
+Throughout this process we treated newline characters and "end of poem" lines (EOP) as distinct words. The model would take in a starting string of
+words and would try to autocomplete the poem. It chose words by taking a weighted random choiced based on the weights calculated for the markov
+datastructure\\
+
+We chose to use a depth of 4 because lower depths had far more incoherent outputs while higher depths seemed to either return no output
+or just directly copy poems for the most part. Here are some example inputs, and their corresponding outputs:\\
+
+
+Show me:
+\begin{flushleft}
+  \textit{
+      \hspace{2em} show me a garden that's \\
+      \hspace{2em} bursting into life
+  }
+\end{flushleft}
+
+Give:
+\begin{flushleft}
+  \textit{
+      \hspace{2em} give your \\
+      \hspace{2em} puppies a little extra\\
+      \hspace{2em} thankful that god took me out\\
+      \hspace{2em} this funny as hell\\
+      \hspace{2em} steve's hair evolving\\
+  }
+\end{flushleft}
+
+ 
+ Teach:
+ \begin{flushleft}
+  \textit{
+      \hspace{2em} teach people  \\
+      \hspace{2em} how to get folder icons\\
+      \hspace{2em} to show in snowboard\\
+  }
+\end{flushleft}
+ 
+It should be noted that these poems were hand-chosen from the markov chain for being more coherent. Often, the markov chain will simply copy
+off another poem, return no output, or only return a couple of words, such as the input "teach" generating the output "teach great place to live".\\
+
+Even in the best case, this model struggles to correctly write lines with the correct number of syllables.
+
+We created another baseline model from a very simple LSTM RNN. the structure for this one was a much simpler version of our primary model.\\
+
+It had a 128 dimensional embedding scheme with 2 hidden layers of dimension 256 and a learning rate of 0.001. It was trained with a batch size of 64
+for 30 epochs. The output was mostly incoherent so we decided to use the Markov chain as a baseline. All the source code for the first RNN and the 
+Markov chain is on github, under the jupyter $notebook RNN_Model_1$.
+ 
+ 
+ 
+
+
 \subsection{Primary Model}
 
 The overall model architecture is described in Figure~\ref{fig:flowchart} flowchart.
