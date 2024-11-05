@@ -129,7 +129,10 @@ This dataset is publicly available and comes from a web scraper run in October 2
 The data comes in the form of a csv file which has the following fields:
 Haiku, a field containing the entire haiku with lines separated by a ”$|$” character;
 Domain, the name of the web page where it was originally found;
-Domains, the amount of times this specific haiku was encountered while scraping the web.
+Domains, the amount of times this specific haiku was encountered while scraping the web;
+URL, the specific url where the poem was found;
+URLs, the number of urls that were found in in the same domain.
+Siblings, the number of other Poems that were found in that same URL.
 Another data source we used is the CMU pronouncing dictionary.
 We use this dictionary to count the amount of syllables in each line of the haiku.
 Given that this is an open source project with a python library, data cleanup was minimal for this dataset.
@@ -138,6 +141,7 @@ Given that this is an open source project with a python library, data cleanup wa
 After downloading the data, the cleaning process for the haiku dataset consists is run by a python script.
 This python script takes in each row of the csv file, and removes all the rows that do not contain a haiku.
 Then, it splits the haiku into its three lines based on where the $|$ delimiter can be found.
+Next it converts all the characters to lowercase.
 And finally, it appends the haiku to a text file in which the end of a haiku is denoted by two new line characters.
 The text file is then used at training when loading the data.
 Below is an example of the raw input data, and its processed form.
@@ -157,15 +161,93 @@ Below is an example of the raw input data, and its processed form.
   \textbf{Finalized (After cleaning):} \par
 
   \raggedleft
-  Yesterday it worked.
+  yesterday it worked.
 
-  Today it is not working.
+  today it is not working.
 
-  Windows is like that.
+  windows is like that.
 \end{multicols}
 
 Another use of the data is in building the vocabulary before training.
-To do this
+To do this we run the entirety of the text file word-by-word into a python dictionary that maps each word to an index.
+This lets us represent the words encountered in a numeric form that is easier to deal with.
+Finally, we must say that because the nature of this project is generative,
+we testing new data simply means prompting the model differently.
+However, we are actively looking into ways of increasing the training data we have access to.
+Some examples of how we could do this are concatenating this data set with others like it
+and scraping the web ourselves in the hopes we find many more haikus that were not seen originally in 2023.
+
+
+\subsection{Baseline Model}
+
+Our first main baseline model is a markov chain of depth four. This was trained on the same data used in the primary model.
+The main structure is shown in figure 0:
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/MARKOV.png}
+  \end{center}
+  \caption{general weighting scheme for markov chain}
+  \label{fig:plot}
+  \end{figure}
+
+Each individual word in the corpora is assigned a weighting scheme for every word (including itself) based on how frequently those other words come 
+after the first word.\\
+Then every pair of words is assigned a weighting scheme for every word in the corpora based on how likely the word appears after the pair.\\
+Then every triple of words is assigned a similar weighting scheme.\\
+This repeats until you have a weighting scheme for every n-gram sequence of words up to the depth provided by the function.\\
+
+Throughout this process we treated newline characters and "end of poem" lines (EOP) as distinct words. The model would take in a starting string of
+words and would try to autocomplete the poem. It chose words by taking a weighted random choiced based on the weights calculated for the markov
+datastructure\\
+
+We chose to use a depth of 4 because lower depths had far more incoherent outputs while higher depths seemed to either return no output
+or just directly copy poems for the most part. Here are some example inputs, and their corresponding outputs:\\
+
+
+Show me:
+\begin{flushleft}
+  \textit{
+      \hspace{2em} show me a garden that's \\
+      \hspace{2em} bursting into life
+  }
+\end{flushleft}
+
+Give:
+\begin{flushleft}
+  \textit{
+      \hspace{2em} give your \\
+      \hspace{2em} puppies a little extra\\
+      \hspace{2em} thankful that god took me out\\
+      \hspace{2em} this funny as hell\\
+      \hspace{2em} steve's hair evolving\\
+  }
+\end{flushleft}
+
+ 
+ Teach:
+ \begin{flushleft}
+  \textit{
+      \hspace{2em} teach people  \\
+      \hspace{2em} how to get folder icons\\
+      \hspace{2em} to show in snowboard\\
+  }
+\end{flushleft}
+ 
+It should be noted that these poems were hand-chosen from the markov chain for being more coherent. Often, the markov chain will simply copy
+off another poem, return no output, or only return a couple of words, such as the input "teach" generating the output "teach great place to live".\\
+
+Even in the best case, this model struggles to correctly write lines with the correct number of syllables.
+
+We created another baseline model from a very simple LSTM RNN. the structure for this one was a much simpler version of our primary model.\\
+
+It had a 128 dimensional embedding scheme with 2 hidden layers of dimension 256 and a learning rate of 0.001. It was trained with a batch size of 64
+for 30 epochs. The output was mostly incoherent so we decided to use the Markov chain as a baseline. All the source code for the first RNN and the 
+Markov chain is on github, under the jupyter $notebook RNN_Model_1$.
+ 
+ 
+ 
+
 
 \subsection{Primary Model}
 
