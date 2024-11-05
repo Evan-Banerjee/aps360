@@ -65,81 +65,63 @@ This is our progress report for the APS360 Final Project.
 
 
 
-\section{Project Document Submission for APS360 Course}
+\section{Project Description}
+
+Project Description
+“Genuine poetry can communicate before it is understood” —T.S. Eliot
+In this project we are working to build a deep learning model to generate short poems of various topics. 
+Our model is a haiku generator which can be prompted with the first line of a haiku and generate the content of subsequent lines, built on an LSTM (long-short-term-memory) architecture.
+Poetry has long been regarded as a deep expression of emotion and human experience. Given that the model we construct will possess neither emotions nor intuition, we are interested to see whether our construction will be able to imitate human poetry, and if so to what degree. If the model is capable of producing compelling poems as output, this would contradict the idea that poetry requires emotion to produce, with implications for our understanding of the nature of creative work in general.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/pipeline.png}
+  \end{center}
+  \caption{Basic Model Pipeline}
+  \label{fig:pipeline}
+\end{figure}
+
+Several ML approaches can be taken to text-generation. 
+For instance, we compare our model to markov chains as a baseline. 
+However, deep learning offers advantages that other statistical approaches cannot. 
+As compared to simpler statistical models, neural nets can learn more abstract and general characteristics in the poems used for training. 
+Given that a hallmark of good poetry is abstraction and unity around a sustaining theme, 
+we believe deep learning is uniquely well-suited for the problem of poetry generation.
+
+\section{Individual Contributions and Responsibilities}
+
+Thus far our team has been performing effectively—we have been able to meet both internal and external deadlines. Currently, we've been collaborating over github, with most team members working in jupyter notebooks we upload to the shared github page for review. Team communication takes place over whatsapp, and both systems have been working well thus far. 
+
+On a technical level, we are quite pleased with our progress thus far, which has been facilitated by the fact that training on text is less memory-intensive than training on images, which allows for more rapid prototyping without consuming very large amounts of computing power. We have already implemented both 'baseline' and prototype models. What remains is hyperparameter tuning, improvements to the model and testing, all of which we feel will be completed well within the timeframe of the project. In summary, we are on track to meet the goals outlined in our proposal, and may even implement some additional testing and functionality beyond what was outlined in our initial proposal.
 
 
-The format for the submissions is a variant of the ICLR 2022 format.
-Please read carefully the instructions below, and follow them
-faithfully. There is a \textbf{9 page} limit for the main text. References do not have any limitation. This is also ICLR's standard length for a paper submission. 
-If your main text goes to page 10, a $-20\%$ penalty would be applied. If your main text goes to page 11, you will not receive any grade for your submission. 
+\section{Redundancies}
 
-\subsection{Style}
+The most crucial remaining aspect of our project is training the finalized model with a consolidated dataset. This is also a potentially sensitive step, as connection losses or malfunctions could result in significant investments of time and computational resources being wasted. Given this, we plan to have two team members responsible for training. If the primary team member runs into difficulties, they will quickly alert the team via whatsapp, so that the secondary group member can take over and begin training on a separate system, thus reducing the risk of a technical or personal problem derailing the project. 
 
-Papers to be submitted to APS360 must be prepared according to the
-instructions presented here.
+Several of our group members have separately implemented or are working to implement different model architectures. While we have a consensus on which architecture we plan to use for the final model, this experimentation provides a strong element of redundancy. If unexpected issues emerge with the architecture we've agreed on, we can discuss as a group and fall back on one of the experimental models.
 
-Authors are required to use the APS360 \LaTeX{} style files obtainable at the
-APS360 website on Quercus. Tweaking the style is not permitted.
+\section{Team Contributions and Communication}
 
-\subsection{Retrieval of style files}
+As shown in the task tracker (Figure~\ref{fig:tasktracker}) and the communications table (Figure~\ref{fig:commstable}), all team members have been responsive and met the necessary deadlines for their work. 
 
-The file \verb+APS360_Project.pdf+ contains these
-instructions and illustrates the various formatting requirements your APS360 paper must satisfy.
-Submissions must be made using \LaTeX{} and the style files
-\verb+iclr2022_conference.sty+ and \verb+iclr2022_conference.bst+ (to be used with \LaTeX{}2e). The file
-\verb+APS360_Project.tex+ may be used as a ``shell'' for writing your paper. All you have to do is replace the author, title, abstract, and text of the paper with
-your own.
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/tasktracker.png}
+  \end{center}
+  \caption{Updated Task Tracker}
+  \label{fig:tasktracker}
+\end{figure}
 
-The formatting instructions contained in these style files are summarized in
-sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
-
-\section{General formatting instructions}
-\label{gen_inst}
-
-The text must be confined within a rectangle 5.5~inches (33~picas) wide and
-9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).
-Use 10~point type with a vertical spacing of 11~points. Times New Roman is the
-preferred typeface throughout. Paragraphs are separated by 1/2~line space,
-with no indentation.
-
-Paper title is 17~point, in small caps and left-aligned.
-All pages should start at 1~inch (6~picas) from the top of the page.
-
-Authors' names are
-set in boldface, and each name is placed above its corresponding
-address. The lead author's name is to be listed first, and
-the co-authors' names are set to follow. Authors sharing the
-same address can be on the same line.
-
-Please pay special attention to the instructions in section \ref{others}
-regarding figures, tables, acknowledgments, and references.
-
-
-There will be a strict upper limit of 9 pages for the main text of the initial submission, with unlimited additional pages for citations. 
-
-\section{Headings: first level}
-\label{headings}
-
-First level headings are in small caps,
-flush left and in point size 12. One line space before the first level
-heading and 1/2~line space after the first level heading.
-
-\subsection{Headings: second level}
-
-Second level headings are in small caps,
-flush left and in point size 10. One line space before the second level
-heading and 1/2~line space after the second level heading.
-
-\subsubsection{Headings: third level}
-
-Third level headings are in small caps,
-flush left and in point size 10. One line space before the third level
-heading and 1/2~line space after the third level heading.
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/commstable.png}
+  \end{center}
+  \caption{Team communication and contributions}
+  \label{fig:commstable}
+\end{figure}
 
 \section{Notable Contribution}
-\label{others}
-
-These instructions apply to everyone, regardless of the formatter being used.
 
 \subsection{Data Processing}
 The main data used for this project consists of the haiku4u dataset in kaggle.
@@ -195,7 +177,7 @@ The overall model architecture is described in Figure~\ref{fig:flowchart} flowch
   \end{center}
   \caption{Model Architecture}
   \label{fig:flowchart}
-  \end{figure}
+\end{figure}
 
 For our haiku generation model, we continued with a Long Short-Term Memory (LSTM) architecture to capture the contextual nuances, and move towards generating coherent and accurate haikus.
 
