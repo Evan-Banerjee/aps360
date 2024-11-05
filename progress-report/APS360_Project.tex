@@ -60,7 +60,7 @@ Student\# 1007314728 \\
 \begin{abstract}
 This is our progress report for the APS360 Final Project.
 %######## APS360: Do not change the next line. This shows your Main body page count.
-----Total Pages: \pageref{last_page}
+Total Pages: \pageref{last_page}
 \end{abstract}
 
 
@@ -95,13 +95,13 @@ Thus far our team has been performing effectively—we have been able to meet bo
 On a technical level, we are quite pleased with our progress thus far, which has been facilitated by the fact that training on text is less memory-intensive than training on images, which allows for more rapid prototyping without consuming very large amounts of computing power. We have already implemented both 'baseline' and prototype models. What remains is hyperparameter tuning, improvements to the model and testing, all of which we feel will be completed well within the timeframe of the project. In summary, we are on track to meet the goals outlined in our proposal, and may even implement some additional testing and functionality beyond what was outlined in our initial proposal.
 
 
-\section{Redundancies}
+\subsection{Redundancies}
 
-The most crucial remaining aspect of our project is training the finalized model with a consolidated dataset. This is also a potentially sensitive step, as connection losses or malfunctions could result in significant investments of time and computational resources being wasted. Given this, we plan to have two team members responsible for training. If the primary team member runs into difficulties, they will quickly alert the team via whatsapp, so that the secondary group member can take over and begin training on a separate system, thus reducing the risk of a technical or personal problem derailing the project. 
+The most crucial remaining aspect of our project is training the finalized model with a consolidated dataset. This is also a potentially sensitive step, as connection losses or malfunctions could result in significant investments of time and computational resources being wasted. Given this, we plan to have two team members responsible for training. If the primary team member runs into difficulties, they will quickly alert the team via WhatsApp, so that the secondary group member can take over and begin training on a separate system, thus reducing the risk of a technical or personal problem derailing the project. 
 
 Several of our group members have separately implemented or are working to implement different model architectures. While we have a consensus on which architecture we plan to use for the final model, this experimentation provides a strong element of redundancy. If unexpected issues emerge with the architecture we've agreed on, we can discuss as a group and fall back on one of the experimental models.
 
-\section{Team Contributions and Communication}
+\subsection{Team Contributions and Communication}
 
 As shown in the task tracker (Figure~\ref{fig:tasktracker}) and the communications table (Figure~\ref{fig:commstable}), all team members have been responsive and met the necessary deadlines for their work. 
 
@@ -246,8 +246,6 @@ for 30 epochs. The output was mostly incoherent so we decided to use the Markov 
 Markov chain is on github, under the jupyter $notebook RNN_Model_1$.
  
  
- 
-
 
 \subsection{Primary Model}
 
@@ -312,14 +310,14 @@ We tested out model with 300 one or two word prompts to the model, and counted t
 \includegraphics[width=1\textwidth]{Figs/plot.png}
 \end{center}
 \caption{Syllables per haiku from 300 outputs}
-\label{fig:plot}
+\label{fig:plot2}
 \end{figure}
 
-As we can see in Figure~\ref{fig:plot}, the vast majority of generated haikus are between 17 and 19 sylalbles, with a few outliers.
+As we can see in Figure~\ref{fig:plot2}, the vast majority of generated haikus are between 17 and 19 sylalbles, with a few outliers.
 These can be explained by either the model incorrectly counting syllables from words that are not
 in the CMU Pronouncing Dictionary \citep{cmu_pronouncing_dictionary}, or the syllable counting algorithm
-miscounting on the output.
-We are aiming to have our model only output 17 syllable haikus, so we have more methods we will be integrating into the model.
+miscalculating the output.
+We are aiming to have our model only output 17 syllable haikus where possible - there are more methods we will be integrating into the model.
 
 \textbf{Qualitative Results:} \\
 The model generates a mix of interesting or funny hakius, and incoherent outputs:
@@ -351,7 +349,7 @@ The model generates a mix of interesting or funny hakius, and incoherent outputs
 \end{itemize}
 
 As we can see, the model is able to generate haikus that could pass for human-written, however, it still generates
-incoherent haikus. Moving towards generating more coherent outputs will be a focus of our as we improve to model.
+incoherent haikus. Moving towards generating more coherent outputs will be a focus of ours as we improve to model.
 
 The main challenges we faced making this model were 
 related to ensuring syllable structure and was maintained and the syllable counts were accurate, and 
@@ -364,33 +362,6 @@ However, this method is not perfect, as the CMU Pronouncing Dictionary does not 
 This causes issues when a word is not in the dictionary, so we are looking to integrate algorithms that can help resolve this, although this still only provides an approximation which can lead to slight issues during generation.
 
 The slow training times were due to the large amount of data and limited access to compute resources. We tested differing batch sizes to reach a reasonable training time given our resources, however we are looking into ways to gain access to more powerful GPUs to speed up training.
-
-\section{Default Notation}
-
-In an attempt to encourage standardized notation, we have included the
-notation file from the textbook, \textit{Deep Learning}
-\cite{goodfellow2016deep} available at
-\url{https://github.com/goodfeli/dlbook_notation/}.  Use of this style
-is not required and can be disabled by commenting out
-\texttt{math\_commands.tex}.
-
-
-
-\section{Final instructions}
-Do not change any aspects of the formatting parameters in the style files.
-In particular, do not modify the width or length of the rectangle the text
-should fit into, and do not change font sizes (except perhaps in the
-\textsc{References} section; see below). Please note that pages should be
-numbered.
-
-
-\subsubsection*{Author Contributions}
-If you'd like to, you may include  a section for author contributions as is done
-in many journals. This is optional and at the discretion of the authors.
-
-\subsubsection*{Acknowledgments}
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments, including those to funding agencies, go at the end of the paper.
 
 \label{last_page}
 
