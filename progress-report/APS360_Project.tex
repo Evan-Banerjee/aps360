@@ -142,7 +142,7 @@ heading and 1/2~line space after the third level heading.
 These instructions apply to everyone, regardless of the formatter being used.
 
 \subsection{Data Processing}
-The main data used for this project consists of the haiku4u dataset in kaggle.
+The main data used for this project consists of the haiku4u dataset in kaggle \citep{haiku4u}.
 This dataset is publicly available and comes from a web scraper run in October 2023.
 The data comes in the form of a csv file which has the following fields:
 Haiku, a field containing the entire haiku with lines separated by a ”$|$” character;
@@ -151,7 +151,7 @@ Domains, the amount of times this specific haiku was encountered while scraping 
 URL, the specific url where the poem was found;
 URLs, the number of urls that were found in in the same domain.
 Siblings, the number of other Poems that were found in that same URL.
-Another data source we used is the CMU pronouncing dictionary.
+Another data source we used is the CMU pronouncing dictionary \citep{cmu_pronouncing_dictionary}.
 We use this dictionary to count the amount of syllables in each line of the haiku.
 Given that this is an open source project with a python library, data cleanup was minimal for this dataset.
 
