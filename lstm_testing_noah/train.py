@@ -38,7 +38,9 @@ def train(model, data_loader, criterion, optimizer, num_epochs, save_path=None, 
             target_seq = target_seq.to(device)
 
             optimizer.zero_grad()
-            hidden = None  # Let LSTM initialize hidden state as zeros
+            h_0 = torch.zeros(model.lstm.num_layers, input_seq.size(0), model.lstm.hidden_size).to(device)
+            c_0 = torch.zeros(model.lstm.num_layers, input_seq.size(0), model.lstm.hidden_size).to(device)
+            hidden = (h_0, c_0)
 
             # Forward pass with autocasting for mixed precision
             with autocast():
