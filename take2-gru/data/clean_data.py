@@ -12,4 +12,4 @@ def clean_data(file_path):
             # Write the cleaned line to the output file
             f_out.write(cleaned_line)
 
-clean_data('poems.txt')
+clean_data('morepoems.txt')

@@ -1,4 +1,4 @@
-
+from collections import Counter
 
 def make_dictionary(poems):
     """
@@ -19,14 +19,33 @@ def make_dictionary(poems):
     idx2word[2] = '<eos>'
 
     count = 3
+
+    min_frequency = 2
+
+    word_frequencies = Counter()
+
     for poem in poems:
-        # Get the word out of the string
         words = poem.split()
         for word in words:
+            word_frequencies[word.lower()] += 1
+
+    for word, frequency in word_frequencies.items():
+        if frequency >= min_frequency:
             if word not in word2idx:
                 word2idx[word] = count
                 idx2word[count] = word
                 count += 1
+
+
+    # for poem in poems:
+    #     # Get the word out of the string
+    #     words = poem.split()
+    #     for word in words:
+    #         word = word.lower()
+    #         if word not in word2idx:
+    #             word2idx[word] = count
+    #             idx2word[count] = word
+    #             count += 1
 
 
 

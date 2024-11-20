@@ -5,7 +5,7 @@ import os
 
 # There is no criteria to compare the models outputs against, so all data is for training.
 def train(model, data_loader, criterion, optimizer, num_epochs, learning_rate, vocab_size, grad_norm, clip_grad,
-          save_location, save_frequency, device):
+          save_location, save_frequency, device, model_params):
     """
     Trains the model
     :param model:
@@ -20,13 +20,15 @@ def train(model, data_loader, criterion, optimizer, num_epochs, learning_rate, v
     :param save_location:
     :param save_frequency:
     :param device:
+    :param model_params:
     :return: Trained Model
     """
 
     print(f'Using device: {device} for training')
 
-    model.train()
     model.to(device)
+    model.train()
+
 
     print('Starting Training')
 
@@ -71,7 +73,12 @@ def train(model, data_loader, criterion, optimizer, num_epochs, learning_rate, v
 
         if (epoch + 1) % save_frequency == 0:
             save_file = os.path.join(save_location, f'haiku_model_epoch_{epoch + 1}.pth')
-            torch.save(model.state_dict(), save_file)
+            config = {name: value for name, value in model_params}
+            model_info = {
+                'state_dict': model.state_dict(),
+                'config': config
+            }
+            torch.save(model_info, save_file)
             print(f'Model saved to {save_location}')
 
     print('Training Complete')

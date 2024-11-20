@@ -48,6 +48,8 @@ def main():
         dropout = 0
         bidirectional = False
 
+        model_parameters = [('vocab_size', vocab_size), ('embedding_dim', embedding_dim), ('padding_idx', padding_idx), ('hidden_dim', hidden_dim), ('num_layers', num_layers), ('dropout', dropout), ('bidirectional', bidirectional)]
+
         model = HaikuGRU(vocab_size=vocab_size,
                          embedding_dim=embedding_dim,
                          padding_idx=padding_idx,
@@ -58,9 +60,9 @@ def main():
 
 
         learning_rate = 1e-3
-        batch_size = 64
+        batch_size = 1
         epochs = 20
-        criterion = torch.nn.CrossEntropyLoss()
+        criterion = torch.nn.CrossEntropyLoss(ignore_index=padding_idx)
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
         grad_norm = 0
         clip_grad = False
@@ -71,7 +73,6 @@ def main():
         dataset = PoemDataset(poems, word2idx)
         collate_fn = CollateFn(padding_index=padding_idx)
 
-        # TODO: create a dataloader from the poems
         data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn, num_workers=8, pin_memory=True)
 
 
@@ -86,14 +87,20 @@ def main():
                       clip_grad=clip_grad,
                       save_location=save_location,
                       save_frequency=save_freq,
-                      device=device)
+                      device=device,
+                      model_params = model_parameters)
+
     else:
         #model = HaikuGRU()
         #model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
         #model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
-        model = torch.load('models/haiku_model_epoch_20.pth')
+        model_data = torch.load('models/haiku_model_epoch_20.pth')
+        config = model_data['config']
+        model = HaikuGRU(**config)
+        model.to(device=device)
+        model.load_state_dict(model_data['state_dict'])
 
-    prompt = input('Enter a prompt: ')
+    prompt = input('Enter a prompt: ') # assuming a max of 5 syllables on the input to start, might change
 
     haiku = generate(model=model,
                      prompt=prompt,
@@ -102,9 +109,7 @@ def main():
                      idx2word=idx2word,
                      device=device)
 
-    for line in haiku:
-        print(line)
-        print('\n')
+    print(haiku)
 
 if __name__ == '__main__':
     main()

@@ -7,7 +7,7 @@ class PoemDataset(Dataset):
     def __init__(self, poems, word2idx):
         # need to convert the words to a list of indices
         self.data = []
-        unknown_idx = word2idx.get('<unk>', None)
+        unknown_idx = word2idx['<unk>']
         for poem in poems:
             temp_poem = []
             words = poem.split()
