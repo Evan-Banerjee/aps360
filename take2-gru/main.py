@@ -2,15 +2,26 @@ from create_dataset import create_dataset
 from make_dictionary import make_dictionary
 from poem_data import PoemDataset
 from model import HaikuGRU
+from train import train
+from generate_haiku import generate
+from pad_data import CollateFn
+from header import start_menu
 
 import nltk
 from nltk.corpus import cmudict
-from torchinfo import summary
+#from torchinfo import summary
 import torch
 
 def main():
+
+    skip_training = start_menu()
+
     poems_path = 'data/poems-cleaned-poems.txt'
     poems = create_dataset(poems_path)
+
+    nltk.download('cmudict', quiet=True)
+
+    syllable_dictionary = cmudict.dict()
 
     word2idx, idx2word = make_dictionary(poems)
     assert len(word2idx) == len(idx2word)
@@ -19,17 +30,81 @@ def main():
     padding_idx = word2idx.get('<pad>', None)
     unknown_idx = word2idx.get('<unk>', None)
 
-    # Hyperparameters ----
-    embedding_dim = 128
-    hidden_dim = 128
-    num_layers = 2
-    dropout = 0
-    bidirectional = False
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        device = torch.device('mps')
+    else:
+        device = torch.device('cpu')
 
-    model = HaikuGRU(vocab_size=vocab_size, embedding_dim=embedding_dim, padding_idx=padding_idx, hidden_dim=hidden_dim, num_layers=num_layers, dropout=dropout, bidirectional=bidirectional)
+    print(f'Using device: {device}')
+
+    if not skip_training:
+
+        # Hyperparameters -----
+        embedding_dim = 128
+        hidden_dim = 128
+        num_layers = 2
+        dropout = 0
+        bidirectional = False
+
+        model = HaikuGRU(vocab_size=vocab_size,
+                         embedding_dim=embedding_dim,
+                         padding_idx=padding_idx,
+                         hidden_dim=hidden_dim,
+                         num_layers=num_layers,
+                         dropout=dropout,
+                         bidirectional=bidirectional)
 
 
+        learning_rate = 1e-3
+        batch_size = 64
+        epochs = 20
+        criterion = torch.nn.CrossEntropyLoss()
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+        grad_norm = 0
+        clip_grad = False
 
+        save_location = 'models'
+        save_freq = 5 # every 5 epochs
+
+        dataset = PoemDataset(poems, word2idx)
+        collate_fn = CollateFn(padding_index=padding_idx)
+
+        # TODO: create a dataloader from the poems
+        data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn, num_workers=8, pin_memory=True)
+
+
+        model = train(model=model,
+                      data_loader=data_loader,
+                      criterion=criterion,
+                      optimizer=optimizer,
+                      num_epochs=epochs,
+                      learning_rate=learning_rate,
+                      vocab_size=vocab_size,
+                      grad_norm=grad_norm,
+                      clip_grad=clip_grad,
+                      save_location=save_location,
+                      save_frequency=save_freq,
+                      device=device)
+    else:
+        #model = HaikuGRU()
+        #model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
+        #model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
+        model = torch.load('models/haiku_model_epoch_20.pth')
+
+    prompt = input('Enter a prompt: ')
+
+    haiku = generate(model=model,
+                     prompt=prompt,
+                     syllable_dictionary=syllable_dictionary,
+                     word2idx=word2idx,
+                     idx2word=idx2word,
+                     device=device)
+
+    for line in haiku:
+        print(line)
+        print('\n')
 
 if __name__ == '__main__':
     main()

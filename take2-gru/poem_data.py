@@ -1,4 +1,5 @@
 from torch.utils.data import Dataset
+import torch
 
 # inherit from torch
 class PoemDataset(Dataset):
@@ -13,7 +14,7 @@ class PoemDataset(Dataset):
             for word in words:
                 encoding = word2idx.get(word, unknown_idx)
                 temp_poem.append(encoding)
-            self.data.append(temp_poem)
+            self.data.append(torch.tensor(temp_poem, dtype=torch.long))
 
     def __len__(self):
         return len(self.data)

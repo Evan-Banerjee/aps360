@@ -35,7 +35,6 @@ class HaikuGRU(nn.Module):
     def init_hidden(self, batch_size, device):
         weights = next(self.parameters()).data
 
-        hidden_state = (weights.new(self.number_layers, batch_size, self.hidden_dim).zero_().to(device),
-                        weights.new(self.number_layers, batch_size, self.hidden_dim).zero_().to(device))
+        hidden_state = (weights.new(self.number_layers, batch_size, self.hidden_dim).zero_().to(device))
 
         return hidden_state
