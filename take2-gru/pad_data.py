@@ -13,6 +13,9 @@ class CollateFn:
         # sort in descend order of size, helpful for our purposes
         batch = sorted(batch, key=lambda x: len(x), reverse=True)
 
+        if len(batch) == 0:
+            print("This should never happen")
+
         """
         Used to help the model predict the next word in a sequence.
         For example, if our poem is "the cat sat"

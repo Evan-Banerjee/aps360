@@ -17,6 +17,9 @@ def main():
     skip_training = start_menu()
 
     poems_path = 'data/poems-cleaned-poems.txt'
+
+    ###### CLEAN POEMS PROPERLY. PROBABLY THE CAUSE OF ISSUE
+
     poems = create_dataset(poems_path)
 
     nltk.download('cmudict', quiet=True)
@@ -76,6 +79,7 @@ def main():
         data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn, num_workers=8, pin_memory=True)
 
 
+
         model = train(model=model,
                       data_loader=data_loader,
                       criterion=criterion,
@@ -100,16 +104,21 @@ def main():
         model.to(device=device)
         model.load_state_dict(model_data['state_dict'])
 
-    prompt = input('Enter a prompt: ') # assuming a max of 5 syllables on the input to start, might change
 
-    haiku = generate(model=model,
-                     prompt=prompt,
-                     syllable_dictionary=syllable_dictionary,
-                     word2idx=word2idx,
-                     idx2word=idx2word,
-                     device=device)
+    prompt = input('Enter a prompt (type exit() to end the program): ') # assuming a max of 5 syllables on the input to start, might change
 
-    print(haiku)
+    while prompt != 'exit()':
+
+        haiku = generate(model=model,
+                         prompt=prompt,
+                         syllable_dictionary=syllable_dictionary,
+                         word2idx=word2idx,
+                         idx2word=idx2word,
+                         device=device)
+
+        print(haiku)
+
+        prompt = input('Enter a prompt (type exit() to end the program): ')
 
 if __name__ == '__main__':
     main()

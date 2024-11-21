@@ -44,6 +44,8 @@ def train(model, data_loader, criterion, optimizer, num_epochs, learning_rate, v
 
             model.zero_grad(set_to_none=True)
 
+            # print(in_seq.numel() == 0) # used for debugging purposes
+
             in_seq = in_seq.to(device)
             out_seq = out_seq.to(device)
 

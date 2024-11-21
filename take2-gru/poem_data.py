@@ -14,7 +14,11 @@ class PoemDataset(Dataset):
             for word in words:
                 encoding = word2idx.get(word, unknown_idx)
                 temp_poem.append(encoding)
+            if len(temp_poem) == 0: # remove after done debugging
+                print("Error oh my god why")
             self.data.append(torch.tensor(temp_poem, dtype=torch.long))
+            if len(self.data) == 0:
+                print("Something went wrong")
 
     def __len__(self):
         return len(self.data)
