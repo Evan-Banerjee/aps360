@@ -1,8 +1,14 @@
 from art import *
 
-# for font in FONT_NAMES:
-#     print(font)
-#     tprint("Hello World", font=font)
+
+for font in FONT_NAMES:
+    print(font)
+    #tprint("HaikuGRU", font=font)
+    #tprint("Created by: \n E. Banerjee\n D.C.R Escalante\n N.A. Monti\n J.H. Sayo", font=font)
+    tprint("Would you like to skip training? (Y/n): ", font=font)
+
+
+
 
 #tprint("Welcome to: HaikuGRU", font="sub-zero")
 #tprint("Created by: N. Monti", font="slant")

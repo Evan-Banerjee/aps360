@@ -17,6 +17,9 @@ def main():
     skip_training = start_menu()
 
     poems_path = 'data/poems-cleaned-poems.txt'
+
+    ###### CLEAN POEMS PROPERLY. PROBABLY THE CAUSE OF ISSUE
+
     poems = create_dataset(poems_path)
 
     nltk.download('cmudict', quiet=True)
@@ -74,6 +77,7 @@ def main():
         collate_fn = CollateFn(padding_index=padding_idx)
 
         data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn, num_workers=8, pin_memory=True)
+
 
 
         model = train(model=model,

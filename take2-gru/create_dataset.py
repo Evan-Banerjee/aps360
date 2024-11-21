@@ -14,6 +14,7 @@ def create_dataset(cleaned_poems):
         current_poem = []
         for line in f:
             poem_line = line.strip()
+            poem_line = poem_line.lower()
             if line.isspace():
                 poems.append(' '.join(current_poem) + ' <eos>')
                 current_poem = []

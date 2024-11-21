@@ -13,7 +13,7 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
     :return: A haiku as a list of lines, each line has the words for that syllable
     """
 
-    #model.eval()
+    model.eval()
 
     words = prompt.split()
 
