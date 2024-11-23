@@ -1,5 +1,6 @@
 import torch
 from count_syllables import count_syllables
+from grammar import GrammarChecker
 
 def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
     """
@@ -40,6 +41,8 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
     # final haiku stored here
     haiku = []
 
+    checker = GrammarChecker()
+
     with torch.no_grad():
         # Total: 17 syllables
         # First line is 5, 2nd is 7, 3rd is 5
@@ -68,7 +71,7 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
 
                 # check the number of syllables that were generated
 
-                if next_word == '<eos>': # maybe we shouldn't do this, and force the model to just move on when we decide it has met the syllables
+                if False and next_word == '<eos>': # maybe we shouldn't do this, and force the model to just move on when we decide it has met the syllables
                     break
                 else:
 
@@ -83,8 +86,41 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
                             prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
 
 
-                        if (add_syllables + current_syllables) == syllable:
+                        if (current_syllables) >= syllable:
                             line_is_done = True
+                
+                if line_is_done:
+                    #start checking for grammatical correctness
+                    sentence = " ".join(line)
+                    print(f"total number of syllables (should be {syllable}) for '{sentence}' is {current_syllables}")
+                    
+                    checker_output = checker.check_grammar(sentence)
+                    #print(f"output of checker is {checker_output}\n")
+                    grammar_status = checker_output['status'] == "Correct"
+                    print(f"line '{sentence}' has correct grammar: {grammar_status}")
+                    if not grammar_status:
+                        #check if line can be fixed
+                        if False and checker_output['message'] != "The sentence appears nonsensical.":
+                            print(f"it's good enough. Moving on:\n")
+                        else:
+                            #print(f"corrected line is {checker.correct_sentence(sentence)}")
+                            print("restarting line\n")
+                            prompt_seq = prompt_seq[:-len(line)]
+                            line = []
+                            current_syllables = 0
+                            
+                            if len(prompt_seq) == 0: #if we were on the first line, reset everything
+                                for word in words:
+                                    prompt_seq.append(word2idx.get(word, word2idx['<unk>']))
+                                    line.append(word)
+                                prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long).to(device)
+                                current_syllables = count_syllables(prompt, syllable_dictionary)
+                            else:
+                                prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
+
+                            line_is_done = False
+
+
 
 
             haiku.append(line)
