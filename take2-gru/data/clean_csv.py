@@ -18,8 +18,13 @@ def extract_column_to_text(csv_file_path, output_text_file, number_to_extract, c
 
         for row in csv_reader:
             text = row[column_to_extract]
-            text = text.replace('\r', '')
+            text = text.replace('\r', '') # carriage return
             text = text.replace('\n\n', '')
+            text = re.sub(r'\u00A0', ' ', text) # non breaking space char
+            text = re.sub(r'\u2009', ' ', text) # thin space
+            text = re.sub(r'\u200A', ' ', text) # hair space
+            text = re.sub(r'\u2028', ' ', text) # line seperator (not new line or carriage return
+            text = re.sub(r'\u2006', ' ', text) # Six-Per-Em Space
             text = re.sub(r'\n[ \t]+', '\n', text)
             text = re.sub(r'[ \t]+', ' ', text)
             text = re.sub(r'-', ' ', text)
@@ -38,4 +43,4 @@ def extract_column_to_text(csv_file_path, output_text_file, number_to_extract, c
             output_file.write('\n\n')
 
 
-extract_column_to_text('all.csv', 'morepoems.txt', 1000, 1)
+extract_column_to_text('kaggle_poem_dataset.csv', 'morepoems2.txt', 100000000000, 4)

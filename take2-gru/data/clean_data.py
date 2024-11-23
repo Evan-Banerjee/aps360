@@ -26,4 +26,4 @@ def clean_data(file_path):
 
             previous_line = line
 
-clean_data('poems.txt')
+clean_data('morepoems2.txt')
