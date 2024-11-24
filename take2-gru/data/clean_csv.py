@@ -23,12 +23,12 @@ def extract_column_to_text(csv_file_path, output_text_file, number_to_extract, c
             text = re.sub(r'\u00A0', ' ', text) # non breaking space char
             text = re.sub(r'\u2009', ' ', text) # thin space
             text = re.sub(r'\u200A', ' ', text) # hair space
-            text = re.sub(r'\u2028', ' ', text) # line seperator (not new line or carriage return
+            text = re.sub(r'\u2028', ' ', text) # line seperator (not new line or carriage return)
             text = re.sub(r'\u2006', ' ', text) # Six-Per-Em Space
             text = re.sub(r'\n[ \t]+', '\n', text)
             text = re.sub(r'[ \t]+', ' ', text)
             text = re.sub(r'-', ' ', text)
-            text = re.sub(r"[^a-zA-Z\s']", '', text)
+            text = re.sub(r"[^a-zA-Z\s']", '', text) # everything except for apostrophe
 
             extracted_elements.append(text)
 

@@ -102,48 +102,48 @@ def main():
 
     # comment here
 
-    test_file = "test_data/output_test.txt"
-    output_file = "test_data/sample_haikus_output.txt"
-
-
-    syllables = []
-    with open(test_file, 'r') as file:
-        with open(output_file, 'w') as output:
-            for line in file:
-                line = line.strip()
-                prompt = line
-                generated_haiku = generate_haiku(model, word2idx, idx2word, prompt)
-                output.write(generated_haiku + "\n\n")
-                syllables.append(syllapy.count(generated_haiku))
-
-    print(syllables)
-    plt.figure(figsize=(10, 6))
-    plt.hist(syllables, bins=range(min(syllables), max(syllables) + 1), edgecolor='black', alpha=0.7)
-
-    # Add labels and title
-    plt.title("Histogram of Data Distribution")
-    plt.xlabel("Element Value")
-    plt.ylabel("Frequency")
-
-    # Display the plot
-    plt.grid(True)
-    plt.savefig("plot.png", format="png", dpi=300)
-    plt.show()
+    # test_file = "test_data/output_test.txt"
+    # output_file = "test_data/sample_haikus_output.txt"
+    #
+    #
+    # syllables = []
+    # with open(test_file, 'r') as file:
+    #     with open(output_file, 'w') as output:
+    #         for line in file:
+    #             line = line.strip()
+    #             prompt = line
+    #             generated_haiku = generate_haiku(model, word2idx, idx2word, prompt)
+    #             output.write(generated_haiku + "\n\n")
+    #             syllables.append(syllapy.count(generated_haiku))
+    #
+    # print(syllables)
+    # plt.figure(figsize=(10, 6))
+    # plt.hist(syllables, bins=range(min(syllables), max(syllables) + 1), edgecolor='black', alpha=0.7)
+    #
+    # # Add labels and title
+    # plt.title("Histogram of Data Distribution")
+    # plt.xlabel("Element Value")
+    # plt.ylabel("Frequency")
+    #
+    # # Display the plot
+    # plt.grid(True)
+    # plt.savefig("plot.png", format="png", dpi=300)
+    # plt.show()
 
 
     # Uncomment below and comment above up to "comment here" mark to give your own input
-    # # Step 3: Prompt for haiku generation
-    # prompt = input("Enter a prompt for haiku generation: ").strip()
-    # if not prompt:
-    #     prompt = "Whispering winds"  # Default prompt
-    #     print(f"No prompt entered. Using default prompt: '{prompt}'")
-    # while prompt != 'exit':
-    #     # Step 4: Generate the haiku
-    #     print("\nGenerating haiku...\n")
-    #     generated_haiku = generate_haiku(model, word2idx, idx2word, prompt)
-    #     print("Generated Haiku:")
-    #     print(generated_haiku)
-    #     prompt = input("Enter a prompt for haiku generation: ").strip()
+    # Step 3: Prompt for haiku generation
+    prompt = input("Enter a prompt for haiku generation: ").strip()
+    if not prompt:
+        prompt = "Whispering winds"  # Default prompt
+        print(f"No prompt entered. Using default prompt: '{prompt}'")
+    while prompt != 'exit':
+        # Step 4: Generate the haiku
+        print("\nGenerating haiku...\n")
+        generated_haiku = generate_haiku(model, word2idx, idx2word, prompt)
+        print("Generated Haiku:")
+        print(generated_haiku)
+        prompt = input("Enter a prompt for haiku generation: ").strip()
 
 
 if __name__ == "__main__":

@@ -5,22 +5,39 @@ from model import HaikuGRU
 from train import train
 from generate_haiku import generate
 from pad_data import CollateFn
-from header import start_menu
+#from header import start_menu
 
 import nltk
 from nltk.corpus import cmudict
 #from torchinfo import summary
 import torch
 
+
 def main():
+    # skip_training = start_menu
 
-    skip_training = start_menu()
+    selection = input("Skip training? (Y/N): ")
+    if selection == 'Y':
+        skip_training = True
+    elif selection == 'N':
+        skip_training = False
+    else:
+        skip_training = False
 
-    poems_path = 'data/poems-cleaned-poems.txt'
+    # poems_path = 'data/poems-cleaned-poems.txt'
+    # poems_path = 'data/morepoems2-cleaned-morepoems2.txt'
+    # poems_path = 'data/haikus2-cleaned.txt'
+    poems_path = 'data/all_poems-cleaned-all_poems.txt'
+    #poems_path = 'data/freakytext-cleaned-freakytext.txt'
 
-    ###### CLEAN POEMS PROPERLY. PROBABLY THE CAUSE OF ISSUE
+    all_lines = True
+    max_lines = 100000
 
-    poems = create_dataset(poems_path)
+    poems = create_dataset(poems_path, all_lines, max_lines)
+
+    for poem in poems:
+        if len(poem) == 0:
+            print(poem)
 
     nltk.download('cmudict', quiet=True)
 
@@ -46,12 +63,14 @@ def main():
 
         # Hyperparameters -----
         embedding_dim = 128
-        hidden_dim = 128
+        hidden_dim = 256
         num_layers = 2
         dropout = 0
         bidirectional = False
 
-        model_parameters = [('vocab_size', vocab_size), ('embedding_dim', embedding_dim), ('padding_idx', padding_idx), ('hidden_dim', hidden_dim), ('num_layers', num_layers), ('dropout', dropout), ('bidirectional', bidirectional)]
+        model_parameters = [('vocab_size', vocab_size), ('embedding_dim', embedding_dim), ('padding_idx', padding_idx),
+                            ('hidden_dim', hidden_dim), ('num_layers', num_layers), ('dropout', dropout),
+                            ('bidirectional', bidirectional)]
 
         model = HaikuGRU(vocab_size=vocab_size,
                          embedding_dim=embedding_dim,
@@ -61,24 +80,22 @@ def main():
                          dropout=dropout,
                          bidirectional=bidirectional)
 
-
         learning_rate = 1e-3
-        batch_size = 1
-        epochs = 20
+        batch_size = 64
+        epochs = 40
         criterion = torch.nn.CrossEntropyLoss(ignore_index=padding_idx)
         optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
         grad_norm = 0
         clip_grad = False
 
         save_location = 'models'
-        save_freq = 5 # every 5 epochs
+        save_freq = 10  # every n epochs
 
         dataset = PoemDataset(poems, word2idx)
         collate_fn = CollateFn(padding_index=padding_idx)
 
-        data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn, num_workers=8, pin_memory=True)
-
-
+        data_loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=batch_size, collate_fn=collate_fn,
+                                                  num_workers=4, pin_memory=True)
 
         model = train(model=model,
                       data_loader=data_loader,
@@ -92,23 +109,22 @@ def main():
                       save_location=save_location,
                       save_frequency=save_freq,
                       device=device,
-                      model_params = model_parameters)
+                      model_params=model_parameters)
 
     else:
-        #model = HaikuGRU()
-        #model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
-        #model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
-        model_data = torch.load('models/haiku_model_epoch_20.pth')
+        # model = HaikuGRU()
+        # model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
+        # model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
+        model_data = torch.load('models/haiku_model_epoch_40_large.pth', map_location=device)
         config = model_data['config']
         model = HaikuGRU(**config)
         model.to(device=device)
         model.load_state_dict(model_data['state_dict'])
 
-
-    prompt = input('Enter a prompt (type exit() to end the program): ') # assuming a max of 5 syllables on the input to start, might change
+    prompt = input(
+        'Enter a prompt (type exit() to end the program): ')  # assuming a max of 5 syllables on the input to start, might change
 
     while prompt != 'exit()':
-
         haiku = generate(model=model,
                          prompt=prompt,
                          syllable_dictionary=syllable_dictionary,

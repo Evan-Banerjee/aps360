@@ -13,14 +13,14 @@ def make_dictionary(poems):
 
     word2idx['<pad>'] = 0
     word2idx['<unk>'] = 1
-    word2idx['<eos>'] = 2
+    #word2idx['<eos>'] = 2
     idx2word[0] = '<pad>'
     idx2word[1] = '<unk>'
-    idx2word[2] = '<eos>'
+    #idx2word[2] = '<eos>'
 
-    count = 3
+    count = 2
 
-    min_frequency = 2
+    min_frequency = 1
 
     word_frequencies = Counter()
 
@@ -50,4 +50,3 @@ def make_dictionary(poems):
 
 
     return word2idx, idx2word
-

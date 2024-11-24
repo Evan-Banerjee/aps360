@@ -81,10 +81,12 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
                             current_syllables += add_syllables
                             prompt_seq.append(next_index)
                             prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
+                            if current_syllables == syllable:
+                                line_is_done = True
+                        elif (add_syllables + current_syllables) > syllable:
+                            print("re prompt")
 
 
-                        if (add_syllables + current_syllables) == syllable:
-                            line_is_done = True
 
 
             haiku.append(line)
