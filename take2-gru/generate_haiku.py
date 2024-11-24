@@ -100,8 +100,23 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
                     print(f"line '{sentence}' has correct grammar: {grammar_status}")
                     if not grammar_status:
                         #check if line can be fixed
-                        if False and checker_output['message'] != "The sentence appears nonsensical.":
-                            print(f"it's good enough. Moving on:\n")
+                        if checker_output['message'] != "The sentence appears nonsensical.":
+                            #print(f"corrected line is {checker.correct_sentence(sentence)}")
+                            print("restarting line\n")
+                            prompt_seq = prompt_seq[:-len(line)]
+                            line = []
+                            current_syllables = 0
+                            
+                            if len(prompt_seq) == 0: #if we were on the first line, reset everything
+                                for word in words:
+                                    prompt_seq.append(word2idx.get(word, word2idx['<unk>']))
+                                    line.append(word)
+                                prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long).to(device)
+                                current_syllables = count_syllables(prompt, syllable_dictionary)
+                            else:
+                                prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
+
+                            line_is_done = False
                         else:
                             #print(f"corrected line is {checker.correct_sentence(sentence)}")
                             print("restarting line\n")

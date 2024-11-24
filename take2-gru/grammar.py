@@ -104,12 +104,20 @@ class GrammarChecker:
                 or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "ADP" and i + 2 < len(doc) and doc[i + 2].pos_ not in {"NOUN", "PROPN", "PRON"})
                 or (doc[i].pos_ == "ADP" and doc[i + 1].pos_ == "DET" and (i + 2 == len(doc) or doc[i + 2].pos_ not in {"NOUN", "ADJ"}))
                 or (doc[-1].pos_ == "DET")  # Check if the last token is a determiner (e.g., "a")
+                or (doc[-1].pos_ == "ADP")  # Check if the last token is a preposition (e.g., "of")
                 or (doc[i].pos_ == "DET" and doc[i + 1].pos_ in {"PRON", "DET"})  # Detect sequences with determiners followed by pronouns or another determiner
                 or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "DET")  # Detect adjective followed by a determiner
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "ADV")  # Detect noun followed by an adverb
+                or (doc[i].pos_ == "ADV" and doc[i + 1].pos_ in {"VERB", "AUX", "NOUN"})  # Detect adverb followed by inappropriate POS
+                or (doc[-1].pos_ == "CCONJ")  # Check if the last token is a coordinating conjunction (e.g., "and")
+                or (doc[-1].pos_ in {"PRON", "ADP", "AUX"})  # Check if the last token is a pronoun, preposition, or auxiliary verb (e.g., "he", "to", "are")
+                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "PRON")  # Detect adjective followed by a pronoun (e.g., "small thou")
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "PRON")  # Detect noun followed by a pronoun (e.g., "flower thou")
+                or (doc[-1].text.lower() == "and")  # Ensure the last word cannot be "and"
             ]
             unusual_pos_sequences = []
 
-            if len(unusual_deps) / len(doc) > 0.1 or len(unusual_pos_sequences) > 0:
+            if len(unusual_deps) / len(doc) > 0.05 or len(unusual_pos_sequences) > 0:
                 return True  # Too many unusual dependencies or uncommon POS sequences
             return False  # Acceptable structure
 
