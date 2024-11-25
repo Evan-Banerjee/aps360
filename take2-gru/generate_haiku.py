@@ -79,7 +79,8 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
                         if (add_syllables + current_syllables) <= syllable:
                             line.append(next_word)
                             current_syllables += add_syllables
-                            prompt_seq.append(next_index)
+                            prompt_seq.append(next_index) # build a sequence to input
+                            #prompt_seq = [next_index] # only have the most recent word as input
                             prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
                             if current_syllables == syllable:
                                 line_is_done = True

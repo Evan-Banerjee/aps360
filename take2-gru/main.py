@@ -9,7 +9,7 @@ from pad_data import CollateFn
 
 import nltk
 from nltk.corpus import cmudict
-#from torchinfo import summary
+from torchinfo import summary
 import torch
 
 
@@ -121,20 +121,66 @@ def main():
         model.to(device=device)
         model.load_state_dict(model_data['state_dict'])
 
-    prompt = input(
-        'Enter a prompt (type exit() to end the program): ')  # assuming a max of 5 syllables on the input to start, might change
+    see_summary = input("See model summary? (Y/N): ")
 
-    while prompt != 'exit()':
-        haiku = generate(model=model,
-                         prompt=prompt,
-                         syllable_dictionary=syllable_dictionary,
-                         word2idx=word2idx,
-                         idx2word=idx2word,
-                         device=device)
+    if see_summary == 'Y' or see_summary == 'y':
+        summary(model)
 
-        print(haiku)
+    fuzz_file = "data/output_test.txt"
+    fuzz_output = "data/fuzz_output_full_seq.txt"
+    fuzz_test = input("Test on a large number of inputs? (Y/N) ")
 
-        prompt = input('Enter a prompt (type exit() to end the program): ')
+    if fuzz_test == 'Y' or fuzz_test == 'y':
+        invalid_word = False
+        test_inputs = []
+        with open(fuzz_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                curr_line = line.strip()
+                curr_line = curr_line.lower()
+                for word in curr_line.split():
+                    if word2idx.get(word, unknown_idx) == unknown_idx:
+                        print(word)
+                        invalid_word = True
+                if not invalid_word:
+                    test_inputs.append(curr_line)
+        if not invalid_word:
+            with open(fuzz_output, 'w') as output_f:
+                for line in test_inputs:
+                    haiku = generate(model=model,
+                                     prompt=line,
+                                     syllable_dictionary=syllable_dictionary,
+                                     word2idx=word2idx,
+                                     idx2word=idx2word,
+                                     device=device)
+                    output_f.write(haiku + "\n\n")
+
+
+        else:
+            print("Mode will not generate any output due to unknown words in input data.")
+
+
+    else:
+        prompt = input(
+            'Enter a prompt (type exit() to end the program): ')  # assuming a max of 5 syllables on the input to start, might change
+
+        while prompt != 'exit()':
+            valid_prompt = True
+            for word in prompt.split():
+                if word2idx.get(word, unknown_idx) == unknown_idx:
+                    print(f"Word: {word} not in dictionary, please try again.")
+                    valid_prompt = False
+
+            if valid_prompt:
+                haiku = generate(model=model,
+                                 prompt=prompt,
+                                 syllable_dictionary=syllable_dictionary,
+                                 word2idx=word2idx,
+                                 idx2word=idx2word,
+                                 device=device)
+
+                print(haiku)
+
+            prompt = input('Enter a prompt (type exit() to end the program): ')
 
 if __name__ == '__main__':
     main()
