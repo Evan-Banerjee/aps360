@@ -29,6 +29,7 @@ class GrammarChecker:
         matches = self.tool.check(sentence)
 
         # Always run nonsensical checks
+        print(f"about to call nonsensical on '{sentence}'\n")
         is_nonsensical = self._is_nonsensical(doc)
         if is_nonsensical:
             return {
@@ -66,9 +67,53 @@ class GrammarChecker:
         Returns:
             bool: True if the sentence is nonsensical or incomplete.
         """
+
+        if len(doc) == 0:
+            return True
+        
         # Detect meaningless repeated words (e.g., "the the the world")
         if any(doc[i].text.lower() == doc[i + 1].text.lower() for i in range(len(doc) - 1)):
             return True
+        
+        if doc[-1].text.lower() in ["doth", "but" "whether", "and", "or", "to", "a", "as", "of", "is", "that", "the", "my", "its", "those"]:
+            return True
+        
+        for i in range(len(doc) - 1):
+            if (
+                (doc[i].pos_ in {"NOUN", "PROPN"} and doc[i + 1].pos_ == "VERB")
+                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ in {"DET", "ADJ"})
+                or (doc[i].pos_ == "CCONJ" and doc[i + 1].pos_ in {"VERB", "AUX"})
+                or (doc[i].pos_ in {"NOUN", "PROPN"} and doc[i + 1].pos_ in {"CCONJ", "VERB"})
+                or (doc[i].pos_ == "PRON" and doc[i + 1].pos_ in {"ADP", "DET", "CCONJ"} and doc[i].dep_ != "expl")
+                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "ADP" and i + 2 < len(doc) and doc[i + 2].pos_ not in {"NOUN", "PROPN", "PRON"})
+                or (doc[i].pos_ == "ADP" and doc[i + 1].pos_ == "DET" and (i + 2 == len(doc) or doc[i + 2].pos_ not in {"NOUN", "ADJ"}))
+                or (doc[-1].pos_ == "DET")  # Check if the last token is a determiner (e.g., "a")
+                or (doc[-1].pos_ == "ADP")  # Check if the last token is a preposition (e.g., "of")
+                or (doc[i].pos_ == "DET" and doc[i + 1].pos_ in {"PRON", "DET"})  # Detect sequences with determiners followed by pronouns or another determiner
+                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "DET")  # Detect adjective followed by a determiner
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "ADV")  # Detect noun followed by an adverb
+                or (doc[i].pos_ == "ADV" and doc[i + 1].pos_ in {"VERB", "AUX", "NOUN"})  # Detect adverb followed by inappropriate POS
+                or (doc[-1].pos_ == "CCONJ")  # Check if the last token is a coordinating conjunction (e.g., "and")
+                or (doc[-1].pos_ in {"PRON", "ADP", "AUX"})  # Check if the last token is a pronoun, preposition, or auxiliary verb (e.g., "he", "to", "are")
+                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "PRON")  # Detect adjective followed by a pronoun (e.g., "small thou")
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "PRON")  # Detect noun followed by a pronoun (e.g., "flower thou")
+                or (doc[-1].text.lower() in ["doth", "but" "whether", "and", "or", "to", "a", "as", "of", "is", "that", "the", "my", "its", "those"])  # Ensure the last word cannot be "and"
+                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "PRON")  # Detect verb followed by a pronoun (e.g., "seen they")
+                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "ADP" and doc[i + 1].text.lower() == "on")  # Detect verb followed by "on" without a proper object
+                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "VERB" and doc[i + 1].text.lower() == "come")  # Detect adjective followed by verb "come" (e.g., "green come")
+                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "NOUN" and doc[i + 1].text.lower() == "weed")  # Detect verb followed by inappropriate noun (e.g., "looks weed")
+                or (doc[i].pos_ in {"ADP", "CCONJ"} and doc[i + 1].pos_ in {"ADP", "CCONJ"})  # Detect consecutive prepositions or conjunctions (e.g., "of its", "and in")
+                or (doc[i].pos_ == "ADP" and doc[i + 1].pos_ == "ADV")  # Detect preposition followed by adverb (e.g., "between soon")
+                or (doc[i].pos_ in {"DET", "PRON"} and doc[i + 1].pos_ == "ADP" and i + 2 < len(doc) and doc[i + 2].pos_ not in {"NOUN", "PROPN"})  # Detect determiner or pronoun followed by preposition without a valid noun (e.g., "of those sweet beneath")
+                or (doc[i].pos_ == "PRON" and doc[i + 1].pos_ == "ADV" and doc[i + 2].pos_ == "NOUN")  # Detect pronoun followed by adverb and then a noun (e.g., "it went when the soul")
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "PRON" and doc[i + 2].pos_ == "AUX" and i + 3 < len(doc) and doc[i + 3].pos_ == "PRON")  # Detect noun followed by pronoun, auxiliary
+                or (doc[i].pos_ == "ADV" and doc[i + 1].pos_ == "ADP" and i + 2 < len(doc) and doc[i + 2].pos_ in {"DET", "NOUN"})  # Detect adverb followed by preposition with determiner or noun (e.g., "ne'er where the")
+                or (doc[i].pos_ == "PRON" and doc[i + 1].pos_ == "VERB" and doc[i + 2].pos_ == "ADV" and i + 3 < len(doc) and doc[i + 3].pos_ in {"DET", "PRON"})  # Detect pronoun followed by verb, adverb, and then determiner/pronoun (e.g., "i breath near its")
+                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "PRON" and doc[i + 2].pos_ == "VERB")  # Detect adjective followed by pronoun and then a verb (e.g., "deep his must speak")
+                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "ADP" and doc[i + 2].pos_ == "VERB")  # Detect noun followed by preposition and then a verb (e.g., "the wind of its love to paused")
+                or (doc[i].pos_ == "PRON" and doc[i + 1].pos_ == "VERB" and doc[i + 2].pos_ == "ADP" and i + 3 < len(doc) and doc[i + 3].pos_ == "VERB")  # Detect pronoun followed by verb, preposition, and then a verb (e.g., "me become to show")
+            ):
+                return True
 
         # Check if the sentence is a valid noun phrase
         root = [token for token in doc if token.dep_ == 'ROOT']
@@ -94,30 +139,8 @@ class GrammarChecker:
                 "advcl", "cc", "conj", "expl", "case", "poss", "npmod", "nummod", "agent"
             }
             unusual_deps = [token for token in doc if token.dep_ not in acceptable_deps]
-            unusual_pos_sequences = [
-                (doc[i].pos_, doc[i + 1].pos_) for i in range(len(doc) - 1)
-                if (doc[i].pos_ in {"NOUN", "PROPN"} and doc[i + 1].pos_ == "VERB")
-                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ in {"DET", "ADJ"})
-                or (doc[i].pos_ == "CCONJ" and doc[i + 1].pos_ in {"VERB", "AUX"})
-                or (doc[i].pos_ in {"NOUN", "PROPN"} and doc[i + 1].pos_ in {"CCONJ", "VERB"})
-                or (doc[i].pos_ == "PRON" and doc[i + 1].pos_ in {"ADP", "DET", "CCONJ"} and doc[i].dep_ != "expl")
-                or (doc[i].pos_ == "VERB" and doc[i + 1].pos_ == "ADP" and i + 2 < len(doc) and doc[i + 2].pos_ not in {"NOUN", "PROPN", "PRON"})
-                or (doc[i].pos_ == "ADP" and doc[i + 1].pos_ == "DET" and (i + 2 == len(doc) or doc[i + 2].pos_ not in {"NOUN", "ADJ"}))
-                or (doc[-1].pos_ == "DET")  # Check if the last token is a determiner (e.g., "a")
-                or (doc[-1].pos_ == "ADP")  # Check if the last token is a preposition (e.g., "of")
-                or (doc[i].pos_ == "DET" and doc[i + 1].pos_ in {"PRON", "DET"})  # Detect sequences with determiners followed by pronouns or another determiner
-                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "DET")  # Detect adjective followed by a determiner
-                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "ADV")  # Detect noun followed by an adverb
-                or (doc[i].pos_ == "ADV" and doc[i + 1].pos_ in {"VERB", "AUX", "NOUN"})  # Detect adverb followed by inappropriate POS
-                or (doc[-1].pos_ == "CCONJ")  # Check if the last token is a coordinating conjunction (e.g., "and")
-                or (doc[-1].pos_ in {"PRON", "ADP", "AUX"})  # Check if the last token is a pronoun, preposition, or auxiliary verb (e.g., "he", "to", "are")
-                or (doc[i].pos_ == "ADJ" and doc[i + 1].pos_ == "PRON")  # Detect adjective followed by a pronoun (e.g., "small thou")
-                or (doc[i].pos_ == "NOUN" and doc[i + 1].pos_ == "PRON")  # Detect noun followed by a pronoun (e.g., "flower thou")
-                or (doc[-1].text.lower() == "and")  # Ensure the last word cannot be "and"
-            ]
-            unusual_pos_sequences = []
 
-            if len(unusual_deps) / len(doc) > 0.05 or len(unusual_pos_sequences) > 0:
+            if len(unusual_deps) / len(doc) > 0.05:
                 return True  # Too many unusual dependencies or uncommon POS sequences
             return False  # Acceptable structure
 

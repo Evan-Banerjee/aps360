@@ -98,7 +98,7 @@ def main():
         #model = HaikuGRU()
         #model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
         #model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
-        model_data = torch.load('models/haiku_model_epoch_20.pth')
+        model_data = torch.load('models/haiku_model_unknown_performance.pth')
         config = model_data['config']
         model = HaikuGRU(**config)
         model.to(device=device)

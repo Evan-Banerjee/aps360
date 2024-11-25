@@ -71,8 +71,8 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
 
                 # check the number of syllables that were generated
 
-                if False and next_word == '<eos>': # maybe we shouldn't do this, and force the model to just move on when we decide it has met the syllables
-                    break
+                if next_word == '<eos>': # maybe we shouldn't do this, and force the model to just move on when we decide it has met the syllables
+                    line_is_done = True
                 else:
 
                     if next_word != '<unk>':
