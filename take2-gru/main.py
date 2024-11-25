@@ -24,7 +24,7 @@ def main():
     else:
         skip_training = False
 
-    # poems_path = 'data/poems-cleaned-poems.txt'
+    #poems_path = 'data/poems-cleaned-poems.txt'
     # poems_path = 'data/morepoems2-cleaned-morepoems2.txt'
     # poems_path = 'data/haikus2-cleaned.txt'
     poems_path = 'data/all_poems-cleaned-all_poems.txt'
@@ -66,7 +66,7 @@ def main():
         hidden_dim = 256
         num_layers = 2
         dropout = 0
-        bidirectional = False
+        bidirectional = True
 
         model_parameters = [('vocab_size', vocab_size), ('embedding_dim', embedding_dim), ('padding_idx', padding_idx),
                             ('hidden_dim', hidden_dim), ('num_layers', num_layers), ('dropout', dropout),
@@ -115,7 +115,7 @@ def main():
         # model = HaikuGRU()
         # model = torch.load('models/haiku_model_epoch_20.pth') # change this to a var
         # model.load_state_dict(torch.load('models/haiku_model_epoch_20.pth'))
-        model_data = torch.load('models/haiku_model_epoch_40_large.pth', map_location=device)
+        model_data = torch.load('models/haiku_model_epoch_50.pth', map_location=device)
         config = model_data['config']
         model = HaikuGRU(**config)
         model.to(device=device)

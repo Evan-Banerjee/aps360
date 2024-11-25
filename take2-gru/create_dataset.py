@@ -3,6 +3,8 @@ def create_dataset(cleaned_poems, all_lines, max_lines):
     Creates a list of poems. Each poem is an element in the list.
     Appends a token to signify the end of a poem.
     :param cleaned_poems: Poems stripped of unnecessary characters
+    :param all_lines: a boolean for if you want to scan all lines in the input poems
+    :param max_lines: the maximum number of lines to scan
     :return: Poems stored in a list
     """
 
