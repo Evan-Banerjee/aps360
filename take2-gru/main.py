@@ -5,7 +5,7 @@ from model import HaikuGRU
 from train import train
 from generate_haiku import generate
 from pad_data import CollateFn
-#from header import start_menu
+from header import start_menu
 
 import nltk
 from nltk.corpus import cmudict
@@ -14,15 +14,15 @@ import torch
 
 
 def main():
-    # skip_training = start_menu
+    skip_training = start_menu()
 
-    selection = input("Skip training? (Y/N): ")
-    if selection == 'Y':
-        skip_training = True
-    elif selection == 'N':
-        skip_training = False
-    else:
-        skip_training = False
+    # selection = input("Skip training? (Y/N): ")
+    # if selection == 'Y':
+    #     skip_training = True
+    # elif selection == 'N':
+    #     skip_training = False
+    # else:
+    #     skip_training = False
 
     #poems_path = 'data/poems-cleaned-poems.txt'
     # poems_path = 'data/morepoems2-cleaned-morepoems2.txt'
@@ -127,7 +127,7 @@ def main():
         summary(model)
 
     fuzz_file = "data/output_test.txt"
-    fuzz_output = "data/fuzz_output_full_seq.txt"
+    fuzz_output = "data/fuzz_output_full_seq-1.txt"
     fuzz_test = input("Test on a large number of inputs? (Y/N) ")
 
     if fuzz_test == 'Y' or fuzz_test == 'y':

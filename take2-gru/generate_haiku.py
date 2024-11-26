@@ -21,17 +21,20 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
 
     line = []
 
+    start_syllables = 0
+
     for word in words:
         prompt_seq.append(word2idx.get(word, word2idx['<unk>']))
         line.append(word)
+        start_syllables += count_syllables(word, syllable_dictionary)
 
     prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long).to(device) # should this be a floating-point tensor or does the model return integers?
 
-    hidden = None
+    # hidden = None
 
     target_syllables = [5,7,5]
 
-    start_syllables = count_syllables(prompt, syllable_dictionary)
+    #start_syllables = count_syllables(prompt, syllable_dictionary)
 
     current_syllables = start_syllables
 
@@ -55,6 +58,8 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
             # generate a new word
 
             while not line_is_done:
+
+                hidden = model.init_hidden(batch_size=prompt_seq_tensor.size(0), device=device)
 
                 output, hidden = model(prompt_seq_tensor, hidden)
 
@@ -84,6 +89,7 @@ def generate(model, prompt, syllable_dictionary, word2idx, idx2word, device):
                             prompt_seq_tensor = torch.tensor(data=[prompt_seq], dtype=torch.long, device=device)
                             if current_syllables == syllable:
                                 line_is_done = True
+                                current_syllables = 0
                         elif (add_syllables + current_syllables) > syllable:
                             print("re prompt")
 
