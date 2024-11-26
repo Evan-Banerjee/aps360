@@ -1,3 +1,4 @@
+
 \documentclass{article} % For LaTeX2e
 \usepackage{iclr2022_conference,times}
 % Optional math commands from https://github.com/goodfeli/dlbook_notation.
@@ -66,14 +67,22 @@ Total Pages: \pageref{last_page}
 \section{Introduction}
 
 \section{Illustriaton}
+The high-level description of the model can be seen below in \ref{fig:model_diagram} .
+The model consists of Gated Recurrent Unit that is trained on poems sourced from the web.
+These poems also build up the dictionary of words used by the model to generate haikus.
+Finally, the diagram also shows the expected usage of this model.
+A user would prompt the model with the starting words of a poem, press enter,
+and the model would generate a haiku with the prompt as its starting point.
 
-% \begin{figure}[h]
-%   \begin{center}
-%   \includegraphics[width=1\textwidth]{Figs/model_diagram.png}
-%   \end{center}
-%   \caption{Basic Model Pipeline}
-%   \label{fig:pipeline}
-% \end{figure}
+
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/model_diagram.png}
+  \end{center}
+  \caption{Top-Level Model Description}
+  \label{fig:model_diagram}
+\end{figure}
 
 \section{Background}
 
@@ -136,15 +145,13 @@ As shown in the task tracker (Figure~\ref{fig:tasktracker}) and the communicatio
 \section{Notable Contribution}
 
 \subsection{Data Processing}
-The main data used for this project consists of the haiku4u dataset in kaggle \citep{haiku4u}.
-This dataset is publicly available and comes from a web scraper run in October 2023.
-The data comes in the form of a csv file which has the following fields:
-Haiku, a field containing the entire haiku with lines separated by a ”$|$” character;
-Domain, the name of the web page where it was originally found;
-Domains, the amount of times this specific haiku was encountered while scraping the web;
-URL, the specific url where the poem was found;
-URLs, the number of urls that were found in in the same domain.
-Siblings, the number of other Poems that were found in that same URL.
+The main data used for this project consists of the Gutenberg Poetry Corpus dataset in
+github \citep{gutenberg_dataset}.
+This dataset is publicly available and comes from a web scraper run in October 2018.
+The data comes in the form of a JSON file which has the following fields:
+"s", a line of poetry, and "gid" an id of the book in the gutemberg project database.
+To clean the data we stripped every line of the poem and
+
 Another data source we used is the CMU pronouncing dictionary \citep{cmu_pronouncing_dictionary}.
 We use this dictionary to count the amount of syllables in each line of the haiku.
 Given that this is an open source project with a python library, data cleanup was minimal for this dataset.
@@ -374,6 +381,28 @@ However, this method is not perfect, as the CMU Pronouncing Dictionary does not 
 This causes issues when a word is not in the dictionary, so we are looking to integrate algorithms that can help resolve this, although this still only provides an approximation which can lead to slight issues during generation.
 
 The slow training times were due to the large amount of data and limited access to compute resources. We tested differing batch sizes to reach a reasonable training time given our resources, however we are looking into ways to gain access to more powerful GPUs to speed up training.
+
+
+\section{Ethical Considerations}
+
+Despite AI being around for several decades, it was only recently that computational power necessary to generate human-level works of art became widely available.
+As impressive as they are, Increasingly improving models that generate images, written stories, and poems also raise questions about how these models get and utilize their training data.
+While this is a very trending topic, legislation protecting individuals from having their written works used to train AI models is still in early stages.
+Because of this we have decided to only use works in the public domain.
+The works we use in this model can all be found in the Gutemberg Project digital library meaning none of them are held under exclusive rights.
+Finally, this model is a purely academic experiment, and we do not seek to benefit from the material it generates.
+Therefore, the literary works we will deal with in this project and our use of them fall under fair dealings as per Canadian law \citep{LegislativeServicesBranch_2024} .
+
+We have discussed the steps that we will take to prevent misuse of our training data, now let's dig deeper into how someone with harmful intentions might use our project.
+The biggest cause of concern comes from poem-writing competitions.
+Instead of having to naturally come up with poems, someone might take advantage of a deep learning model to easily generate several entries, increasing their chances of winning or simply overloading the contest's submission portal.
+While many competitions may not explicitly ban AI-generated poems, it is not hard to see how a generated poem winning over many human authors may be seen as controversial.
+Our system somewhat counteracts this by having the user be vital in the poem creation as they must prompt the model in order for it to generate anything.
+Additionally, our limited scope of haikus would make it harder for someone to take advantage of the model on a massive scale as haikus are notoriously short.
+With these ethical considerations, we can confidently say that misuse of this model his highly unlikey.
+
+
+\pagebreak
 
 \label{last_page}
 
