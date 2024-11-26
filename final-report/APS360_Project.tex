@@ -341,34 +341,46 @@ We are aiming to have our model only output 17 syllable haikus where possible - 
 \textbf{Qualitative Results:} \\
 The model generates a mix of interesting or funny hakius, and incoherent outputs:
 \begin{itemize}
-  \item \textit{“river flows wildly \\
-  air patches on the surface \\
-  dissipates in life”}
-  \item \textit{“rainfall through the roof \\
-  dancers from serenity \\
-  as his life goes by”}
-  \item \textit{“grass on the wayside \\
-  looking for the light to come \\
-  warm clouds and weather”}
-  \item \textit{“bloom gives way to me \\
-  for i am not your hero \\
-  i am george carlin”}
-  \item \textit{“pond ripples to steal \\
-  winters for having their gaze \\
-  beg for hope bears now”}
-  \item \textit{“branch and wood filters \\
-  of night bright and sunny day \\
-  hot lemonade waits”}
-  \item \textit{“stream sits and pure fish \\
-  in between and i am glad \\
-  with what we i”}
-  \item \textit{“ancient tree freedom \\
-  anxiety creation \\
-  ignites and section”}
+
+
+  \item \textit{"river as thou fledst \\
+  she glows within thy dreams where \\
+  babe sad favorite"}
+
+  \item \textit{"water from the breeze \\
+  there love dejected lies not \\
+  here and could he dream"}
+
+  \item \textit{"grass and the moon is \\
+  the smoke of a broken tree \\
+  is great for the sun"}
+
+  \item \textit{"ocean says she has \\
+  to stir stainless nightingale \\
+  but well they judge me”}
+
+  \item \textit{“car wolves reach of sighs \\
+  and coat an hurrah like strife \\
+  truest mother round”}
+
+  \item \textit{“long does fairer by \\
+  their heart yet cracks and half so \\
+  late they bent him off”}
+
+  \item \textit{“when the death is no \\
+  knight ere for my dower and the \\
+  vine and hints of that”}
+
+  \item \textit{"wake when spite of love \\
+  when that their light are red and \\
+  many a star sweet”}
+
 \end{itemize}
 
 As we can see, the model is able to generate haikus that could pass for human-written, however, it still generates
-incoherent haikus. Moving towards generating more coherent outputs will be a focus of ours as we improve to model.
+incoherent haikus.
+While the decision to make train the haikus in poetry rather than haikus resulted in more poetic language,
+it also increased the frequency of rarely used words.
 
 The main challenges we faced making this model were
 related to ensuring syllable structure and was maintained and the syllable counts were accurate, and
@@ -378,9 +390,13 @@ Because of irregularities in the English Language, we found it difficult to
 come up with a reliable method to count the number of syllables in a given word. Our current solution involves referencing
 the CMU Pronouncing Dictionary \citep{cmu_pronouncing_dictionary} to get the syllable count of a given word.
 However, this method is not perfect, as the CMU Pronouncing Dictionary does not contain all words that may show up in our vocabulary.
-This causes issues when a word is not in the dictionary, so we are looking to integrate algorithms that can help resolve this, although this still only provides an approximation which can lead to slight issues during generation.
+This causes issues when a word is not in the dictionary, so we opted for heuristic algorithms to fix this,
+although this is still not perfect in practice, it significantly reduced the number of times the 5-7-5 meter was broken.
 
-The slow training times were due to the large amount of data and limited access to compute resources. We tested differing batch sizes to reach a reasonable training time given our resources, however we are looking into ways to gain access to more powerful GPUs to speed up training.
+Despite gaining more resources for training through Vertex AI,
+this is not a sustainable way of training the model as it quickly runs out of free compute credits.
+However, using even just the free Tier drastically increased the speed at which we were able to train the model.
+
 
 
 \section{Ethical Considerations}
