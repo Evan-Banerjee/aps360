@@ -427,7 +427,43 @@ Despite gaining more resources for training through Vertex AI,
 this is not a sustainable way of training the model as it quickly runs out of free compute credits.
 However, using even just the free Tier drastically increased the speed at which we were able to train the model.
 
+\section{Evaluate model on new data}
+To evaluate our model, we generated dozens of new poems from varying inputs and chose the five that we believed were the most coherent to represent the model. We then created a survey with 15 poems. These consisted of the 5 made by our model, 5 chosen from the more coherent outputs of the baseline markov chain, and 5 chosen from the repository of human written poems that we used in training. We had 24 people rate the quality of each poem from 1 to 10, and averaged all the responses. The results are shown in the figure below:
 
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/survey_results.png}
+  \end{center}
+  \caption{Syllables per haiku from 300 outputs}
+  \label{fig:plot2}
+\end{figure}
+
+the five poems used from our model are:
+
+\begin{itemize}
+
+
+  \item \textit{"winter chill with hopes \\
+  of peace they see the home to \\
+  sleep and we are heard"}
+
+  \item \textit{"new grass like diamonds \\
+  blowing through the darker sounds \\
+  of heaven to flame"}
+
+  \item \textit{"the mightiest makes \\
+  the memory of some three \\
+  shepherds from the glow"}
+
+  \item \textit{"the charm of his heart \\
+  the graceful hills of the brow \\
+  and the black essence}
+
+  \item \textit{the ravenous sand \\
+  the graveyard for the raindrops \\
+  and the gothic feet}
+
+\end{itemize}
 
 \section{Ethical Considerations}
 
