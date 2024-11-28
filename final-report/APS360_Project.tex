@@ -1,4 +1,3 @@
-
 \documentclass{article} % For LaTeX2e
 \usepackage{iclr2022_conference,times}
 % Optional math commands from https://github.com/goodfeli/dlbook_notation.
@@ -85,6 +84,22 @@ and the model would generate a haiku with the prompt as its starting point.
 \end{figure}
 
 \section{Background}
+Previous poetry generation models utilized Recurrent Neural Networks (RNN) with some form of memory limiting to generate poems off a large dataset.\\\\
+One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, \citep{novikovaenglish}.\\\\
+Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) for encoding, one RNN for creating hidden context parameters,
+and another RNN with a separate weight vector for modifying the final output \citep{zhang2014chinese}.
+The output of this model was particularly compelling, with human ratings for the generated poems being over 75\% of the ratings given to human written poems.\\\\
+Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.
+This model’s poems were incredibly convincing, with 56\% of polled individuals believing the AI generated poems were written by humans.\\\\
+When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well \citep{haikugeneration}. 
+For this model human evaluators gave the AI generated haikus an average quality score that was over 80\% of the average score given to human poems. This model only used a single RNN with LSTM. 
+Granted, the evaluations were only done by 8 individuals, but the strength of RNNs for this kind of task is evident.\\\\
+Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}.
+This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met. 
+It also enabled the user to specify emotional tone by encoding category preferences (happy, sad, etc.) into a weighted vector that was then used after generating a line to swap out words that didn’t fit the categories well with words that did.\\\\
+This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category. 
+This model also utilized a softmax function that truncates the least likely words from the sample space during generation, increasing the probability of likely words and drastically improving output.\\\\
+Though all of this research guided our design process, we mostly ended up utilizing the work out of the University of Saarland and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of architecture design and constraining output.
 
 \section{Project Description}
 
