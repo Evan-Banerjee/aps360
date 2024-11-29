@@ -105,16 +105,15 @@ and the model would generate a haiku with the prompt as its starting point.
 \end{figure}
 
 \section{Background}
-Previous poetry generation models utilized Recurrent Neural Networks (RNN) with some form of memory limiting to generate poems off a large dataset.\\\\
-One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, \citep{novikovaenglish}.\\\\
-Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) and multiple RNN for futher processing \citep{zhang2014chinese}.\\\\
-Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.\\\\
-When focusing specifically on haikus, even a relatively basic RNN model built by students at Stanford University was able to score well \citep{haikugeneration}. Here, AI generated haikus were given a total score of 80\% of the human ones.\\\\
-Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}.
-This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met, and swapped out words after generating lines to improve flow.\\\\
-Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or in the specific method they used to manage hidden states, or in any other part of the model as a whole, each model had their own unique way of creating coherent output.\\\\ 
-However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester, with our final work utilizing a GRU, individual words as tokens, grammar checks to constrain the output.\\\\
-
+Previous poetry generation models utilized Recurrent Neural Networks (RNN) with some form of memory limiting to generate poems off a large dataset.
+One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, \citep{novikovaenglish}. 
+Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) and multiple RNN for futher processing \citep{zhang2014chinese}. 
+Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}. 
+When focusing specifically on haikus, even a relatively basic RNN model built by students at Stanford University was able to score well \citep{haikugeneration}. Here, AI generated haikus were given a total score of 80\% of the human ones. 
+Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}. 
+This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met, and swapped out words after generating lines to improve flow. 
+Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or in the specific method they used to manage hidden states, or in any other part of the model as a whole, each model had their own unique way of creating coherent output. 
+However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester, with our final work utilizing a GRU, individual words as tokens, grammar checks to constrain the output.
 
 
 \section{Data Processing}
@@ -439,6 +438,28 @@ Because of this we have decided to only use works in the public domain.
 The works we use in this model can all be found in the Gutemberg Project digital library meaning none of them are held under exclusive rights.
 Finally, this model is a purely academic experiment, and we do not seek to benefit from the material it generates.
 Therefore, the literary works we will deal with in this project and our use of them fall under fair dealings as per Canadian law \citep{LegislativeServicesBranch_2024} .
+
+\section{Discussion}
+
+Qualitatively, we consider our model successful. Not only is it able to produce coherent haikus obeying syllable count rules, but some of its work has shown unexpected complexity on both a literary and emotional level.
+As a team, we agree that several of its best outputs are comparable to human-written haikus.
+The model also generates some interesting phrases which we consider unlikely for human poets to arrive at, such as 'garden salmon', which might be a useful source of inspiration for human writers and poets.
+
+The model sometimes implements literary techniques, such as alliteration and meter.
+Its greatest weakness is a tendency to produce incoherent poems, without a consistent theme or clear interpretation.
+Another of its limitations is that it is relatively low-percentage, producing some good poems in a mix of mediocre or incoherent ones.
+We attempted to address this with a manually coded grammar-checker, as described above, but this approach is intrinsically limited.
+After all, poetic quality is too subjective for direct quantification.
+Additionally, because haikus tend to permit certain violations of ordinary grammar, even applying rigid grammatical rules is a balance between coherence and the risk of losing some of the flexibility unique to the medium.
+It is worth noting that human poets and writers can be similarly low-percentage to our model—many writers, and especially many poets, draft large quantities of unpublishable material, only presenting a carefully curated portion of their output to the final audience.
+Similarly, we conceptualize our model as a draft-generator, capable of producing a large volume of output, some of which is creatively interesting.
+An interesting future extension of this project would be to train a model to distinguish good poetry from bad, and chain the models together in order to automate the poem-selection process.
+
+One of the challenges of this model is that it is difficult to quantitatively evaluate the quality of model output, given that haiku quality is extremely subjective and can't be reduced to a simple, automatic evaluation process.
+Introducing a more advanced evaluation architecture, such as a GAN, might be useful in future work.
+
+Despite this challenge, our results from surveying humans on haiku quality does suggest that our model was performing close to human levels at its best.
+This fact contributes to our team's evaluation that the project was successful overall, with many potential next-steps (automated editing, more advanced architectures, larger datasets) being available to improve model performance and versatility
 
 
 %\pagebreak
