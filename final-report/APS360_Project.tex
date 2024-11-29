@@ -15,6 +15,7 @@
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{multicol}
+\usepackage{placeins}
 
 %######## APS360: Put your project Title here
 \title{Poetry Through Propogation,\ Generating Haikus With Deep Learning Recurrent Neural Networks}
@@ -99,7 +100,9 @@ This model forced the AI to repeatedly output lines of a poem until certain synt
 It also enabled the user to specify emotional tone by encoding category preferences (happy, sad, etc.) into a weighted vector that was then used after generating a line to swap out words that didn’t fit the categories well with words that did.\\\\
 This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category. 
 This model also utilized a softmax function that truncates the least likely words from the sample space during generation, increasing the probability of likely words and drastically improving output.\\\\
-Though all of this research guided our design process, we mostly ended up utilizing the work out of the University of Saarland and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of architecture design and constraining output.
+Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or the or the specific method they used to manage hidden states. Whether they used syllables as the their input output token, or whether they used words. Whether they forced the model to regenerate lines that didn't fit certain syntax requirements, used algorithms to swap out words after generating the lines, or simply left the lines as is. Each model had their own unique way of addressing the somewhat existential task of creating poetry. Even the specific methods used to normalize their logits or sample from their word space was varied. most of the models weren't even trying to write the same kind of poem.\\\\ 
+However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester.\\\\
+In the end we mostly ended up utilizing the work out of the University of Saarland, and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of utilizing a GRU, usinig individual words as outputs, and processing lines after generating them to fit syntax requirements. However, just like every other model, we used the main encoding-RNN with hidden state-decoding framework to generate individual lines.
 
 \section{Project Description}
 
@@ -437,8 +440,9 @@ To evaluate our model, we generated dozens of new poems from varying inputs and 
   \caption{Syllables per haiku from 300 outputs}
   \label{fig:plot2}
 \end{figure}
+\FloatBarrier
 
-the five poems used from our model are:
+the five poems used in the survey from our model are:
 
 \begin{itemize}
 
