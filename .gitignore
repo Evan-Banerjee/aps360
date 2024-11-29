@@ -22,3 +22,4 @@ test_data/haikus2-cleaned.txt
 test_data/haikus_unique.csv
 pdflatex85725.fls
 .DS_Store
+__pycache__
