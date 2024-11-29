@@ -230,7 +230,54 @@ In adition to being the largest collection of poems we could find,
 this data set provides the additional benefit of having a wide range of styles.
 This allows us to make more diverse poems as seen below in the qualitative results section.
 
-\subsection{Baseline Model}
+\section{Architecture}
+
+For our final model, we switched to a neural network centred around the gated recurrent unit (GRU) architecture, which replaced our previous long-short term memory (LSTM) architecture. 
+The gated recurrent unit has been shown to be similar to the LSTM architecture on performance and quality of output, while requiring less compute resources during training \citep{LSTMvGRU}, which
+appeared to hold true when testing our model and comparing to our previous design. 
+
+%Figure~\ref{fig:flowchart} flowchart.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/Haiku-Generation.png}
+  \end{center}
+  \caption{Model Architecture}
+  \label{fig:flowchart}
+\end{figure}
+
+The architecture of the model is as follows, as described in the Figure~\ref{fig:flowchart} flowchart.
+
+Firstly, the model parameters are manually configured. These include the following, with the hyperparameters we found to work best with our dataset:
+
+\begin{enumerate}
+  \item The size of the vocabulary dictionary - which was 109976 distinct words for our data
+  \item Embedding dimensions - 128 was found to work well
+  \item The index of the padding token within the vocabulary dictionary
+  \item The number of hidden dimensions - set to 256
+  \item The number of GRU layers - set to 3
+  \item How much dropout to apply between layers - we did not use any
+  \item If the GRU will perform bidirectional passes - we did not perform these passes
+\end{enumerate}
+
+When data is passed to the model, it first goes though the embedding layer. This layer serves to transform this data into vector representations that capture the relationships between words throughout the data. 
+The layer takes in the number of unique words in the dataset, the size of the embedding dimension, and the padding token index so that it does not contribute to gradients when training.
+
+The output of that layer is then passed to the Gated Recurrent Unit layer, which serves to
+process the sequence of embeddings to capture contextual information across words. It takes in the embedding dimensions, the hidden dimensions, 
+the number of GRU layers to have, batch\_first (which should always be set to true for our data),
+how much dropout to apply, and if the GRU will perform bidirectional passes. The resulting output of this layer are two tensors, 
+one with the output features from the GRU, and another that has the hidden states of the GRU for each layer.
+
+Finally, the output features are passed to a linear layer, which maps them as logits to each word in the vocabulary set. The input size to the layer is the number of input features, 
+which is the size of the hidden dimension, and the output size is the number of output features, equal to the size of the vocabulary set.
+
+It should be noted that if the GRU is to perform bidirectional passes, the number of hidden dimensions must be multiplied by two in order to align with the required tensor size.
+
+This model can then be passed to train, for which we used Cross Entropy Loss criterion with the padding index passed as a parameter to ensure it does not contribute to gradients, 
+and the Adaptive Movement Estimation (Adam) optimizer. Additionally, we used a learning rate of 0.001, a batch size of 64, and 50 epochs.
+
+\section{Baseline Model}
 
 Our first main baseline model is a markov chain of depth four. This was trained on the same data used in the primary model.
 The main structure is shown in figure 0:
@@ -298,80 +345,33 @@ for 30 epochs. The output was mostly incoherent so we decided to use the Markov 
 Markov chain is on github, under the jupyter notebook \texttt{RNN\_Model\_1}.
 
 
+\section{Quantitative Results}
 
-\subsection{Primary Model}
-
-The overall model architecture is described in the Figure~\ref{fig:flowchart} flowchart.
-
-\begin{figure}[h]
-  \begin{center}
-  \includegraphics[width=1\textwidth]{Figs/HaikuLSTMArch.png}
-  \end{center}
-  \caption{Model Architecture}
-  \label{fig:flowchart}
-\end{figure}
-
-For our haiku generation model, we continued with a Long Short-Term Memory (LSTM) architecture to capture the contextual nuances, and move towards generating coherent and accurate haikus.
-
-The architecture of the model is as follows:
-
-First, the input data is passed through an embedding layer.
-It transforms this data into vector representations that capture the
-relaitonships between words throughout the data.
-The layer takes in the number of unique words in the dataset,
-including our special tokens.
-These special tokens consist of the following:
-\begin{itemize}
-  \item Padding token - used to make sequences uniform in length within a batch.
-  \item Unknown token - represents a word that is not in the vocabulary.
-  \item End-of-Sequence token - signifies where the model should stop generating text.
-\end{itemize}
-
-The embedding dimsensions are also inputs to this layer, which are the size
-of each word in the embedding vector, as is the padding index - the index reserved
-for our padding tokens that ensure padded positions don't contribute to the learning process.
-
-Next, the output of the embedding layer is passed through the LSTM layer.
-This layer serves to process the sequence of embeddings to capture
-contextual information across words.
-It takes in the numbers of features in the hidden stats of the LSTM, the number of stacked
-LSTM layers, and the batch size.
-The resuling output of this layer is a tensor that has the output features from the LSTM,
-as well as the hidden states of the LSTM for each layer.
-
-Finally, the output of the LSTM layer is passed through a fully-connected layer.
-This maps the LSTM outputs to our vocabulary set, and produces logits for each word in this vocabulary.
-The input feautres are equal to the LSTM's hidden dimensions, and the output features are equal to the size of the vocabulary.
-
-In our current configuration, we used $128$ embedding dimensions, $256$ hidden dimensions, and $2$ LSTM layers.
-
-With our current training data, we have a vocabulary size of $50554$ words. \\
-The embedding layer has $50554 \cdot 128 = 6470912$ parameters. \\
-Next the the LSTM layer has $2 \cdot 4 \cdot (256 \cdot (128 + 256) + 256) = 788480$ parameters. The four is to account for the input gate, forget gate, cell gate, and output gate in an LSTM. \\
-Finally, the fully-connected layer has $256 \cdot 50554 + 50554 = 12992378$ parameters. \\
-
-Therefore, the total number of parameters in the current model is $20251770$. \\
-
-As for our training hyperparameters, we chose to train over $50$ epochs, with a learning rate of $0.001$, a batch size of $64$, an Adam optimizer\footnote{Chosen from findings in \citep{kingma2017adammethodstochasticoptimization}}, and a Cross Entropy Loss criterion\footnote{Chosen from approach in \citep{tensorflow_text_generation}}.
-
-\textbf{Quantitative Results:} \\
 We tested out model with 300 one or two word prompts to the model, and counted the syllables in the output haiku.
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=1\textwidth]{Figs/plot.png}
+\includegraphics[width=1\textwidth]{Figs/syllable_count_last_word-1.png}
 \end{center}
 \caption{Syllables per haiku from 300 outputs}
 \label{fig:plot2}
 \end{figure}
 
-As we can see in Figure~\ref{fig:plot2}, the vast majority of generated haikus are between 17 and 19 sylalbles, with a few outliers.
-These can be explained by either the model incorrectly counting syllables from words that are not
-in the CMU Pronouncing Dictionary \citep{cmu_pronouncing_dictionary}, or the syllable counting algorithm
-miscalculating the output.
-We are aiming to have our model only output 17 syllable haikus where possible - there are more methods we will be integrating into the model.
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/loss-vs-epochs-2.png}
+  \end{center}
+  \caption{Training Loss over 50 Epochs}
+  \label{fig:lossvepochs}
+  \end{figure}
 
-\textbf{Qualitative Results:} \\
+As shown in Figure~\ref{fig:plot2}, all haikus that were generated by the model meet the 17 syllable count, 
+demonstrating the model’s ability to regenerate words dynamically in order to maintain the traditional haiku structure - which was one of the targets from our previous model iteration.
+
+During training, the loss and the rate of loss steadily decreases over the epochs as seen in Figure~\ref{fig:lossvepochs}, showing our model is continuing to learn the meanings of words relative to their neigbours in sentences. 
+The loss is calculated as the rate of accuracy between the model’s prediction of the next word in a sequence and the original word in that sequence, which reached 4.5 after 50 epochs.
+
+\section{Qualitative Results}
 The model generates a mix of interesting or funny hakius, and incoherent outputs:
 \begin{itemize}
 
@@ -430,7 +430,7 @@ Despite gaining more resources for training through Vertex AI,
 this is not a sustainable way of training the model as it quickly runs out of free compute credits.
 However, using even just the free Tier drastically increased the speed at which we were able to train the model.
 
-\section{Evaluate model on new data}
+\section{Evaluation on new data}
 To evaluate our model, we generated dozens of new poems from varying inputs and chose the five that we believed were the most coherent to represent the model. We then created a survey with 15 poems. These consisted of the 5 made by our model, 5 chosen from the more coherent outputs of the baseline markov chain, and 5 chosen from the repository of human written poems that we used in training. We had 24 people rate the quality of each poem from 1 to 10, and averaged all the responses. The results are shown in the figure below:
 
 \begin{figure}[h]
@@ -488,7 +488,10 @@ Additionally, our limited scope of haikus would make it harder for someone to ta
 With these ethical considerations, we can confidently say that misuse of this model his highly unlikey.
 
 
-\pagebreak
+%\pagebreak
+
+\newpage
+\clearpage
 
 \label{last_page}
 
