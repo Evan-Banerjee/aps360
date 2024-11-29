@@ -66,7 +66,9 @@ Student\# 1007314728 \\
 
 \section{Introduction}
 
-“Genuine poetry can communicate before it is understood” —T.S. Eliot
+\begin{center}
+  \textit{“Genuine poetry can communicate before it is understood” —T.S. Eliot}
+\end{center}
 
 In this project we are working to build a deep learning model to generate short poems of various topics.
 Our model is a haiku generator which can be prompted with the first line of a haiku and generate the content of subsequent lines, built on a gated recurrent unit (GRU) architecture.
@@ -110,58 +112,21 @@ and another RNN with a separate weight vector for modifying the final output \ci
 The output of this model was particularly compelling, with human ratings for the generated poems being over 75\% of the ratings given to human written poems.\\\\
 Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.
 This model’s poems were incredibly convincing, with 56\% of polled individuals believing the AI generated poems were written by humans.\\\\
-When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well \citep{haikugeneration}. 
-For this model human evaluators gave the AI generated haikus an average quality score that was over 80\% of the average score given to human poems. This model only used a single RNN with LSTM. 
+When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well \citep{haikugeneration}.
+For this model human evaluators gave the AI generated haikus an average quality score that was over 80\% of the average score given to human poems. This model only used a single RNN with LSTM.
 Granted, the evaluations were only done by 8 individuals, but the strength of RNNs for this kind of task is evident.\\\\
 Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}.
 This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met.
 It also enabled the user to specify emotional tone by encoding category preferences (happy, sad, etc.) into a weighted vector that was then used after generating a line to swap out words that didn’t fit the categories well with words that did.\\\\
-This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category. 
+This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category.
 This model also utilized a softmax function that truncates the least likely words from the sample space during generation, increasing the probability of likely words and drastically improving output.\\\\
-Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or the or the specific method they used to manage hidden states. Whether they used syllables as the their input output token, or whether they used words. Whether they forced the model to regenerate lines that didn't fit certain syntax requirements, used algorithms to swap out words after generating the lines, or simply left the lines as is. Each model had their own unique way of addressing the somewhat existential task of creating poetry. Even the specific methods used to normalize their logits or sample from their word space was varied. most of the models weren't even trying to write the same kind of poem.\\\\ 
+Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or the or the specific method they used to manage hidden states. Whether they used syllables as the their input output token, or whether they used words. Whether they forced the model to regenerate lines that didn't fit certain syntax requirements, used algorithms to swap out words after generating the lines, or simply left the lines as is. Each model had their own unique way of addressing the somewhat existential task of creating poetry. Even the specific methods used to normalize their logits or sample from their word space was varied. most of the models weren't even trying to write the same kind of poem.\\\\
 However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester.\\\\
 In the end we mostly ended up utilizing the work out of the University of Saarland, and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of utilizing a GRU, usinig individual words as outputs, and processing lines after generating them to fit syntax requirements. However, just like every other model, we used the main encoding-RNN with hidden state-decoding framework to generate individual lines.
 
 
 
-
-
-\section{Individual Contributions and Responsibilities}
-
-Thus far our team has been performing effectively—we have been able to meet both internal and external deadlines. Currently, we've been collaborating over github, with most team members working in jupyter notebooks we upload to the shared github page for review. Team communication takes place over whatsapp, and both systems have been working well thus far.
-
-On a technical level, we are quite pleased with our progress thus far, which has been facilitated by the fact that training on text is less memory-intensive than training on images, which allows for more rapid prototyping without consuming very large amounts of computing power. We have already implemented both 'baseline' and prototype models. What remains is hyperparameter tuning, improvements to the model and testing, all of which we feel will be completed well within the timeframe of the project. In summary, we are on track to meet the goals outlined in our proposal, and may even implement some additional testing and functionality beyond what was outlined in our initial proposal.
-
-
-\subsection{Redundancies}
-
-The most crucial remaining aspect of our project is training the finalized model with a consolidated dataset. This is also a potentially sensitive step, as connection losses or malfunctions could result in significant investments of time and computational resources being wasted. Given this, we plan to have two team members responsible for training. If the primary team member runs into difficulties, they will quickly alert the team via WhatsApp, so that the secondary group member can take over and begin training on a separate system, thus reducing the risk of a technical or personal problem derailing the project.
-
-Several of our group members have separately implemented or are working to implement different model architectures. While we have a consensus on which architecture we plan to use for the final model, this experimentation provides a strong element of redundancy. If unexpected issues emerge with the architecture we've agreed on, we can discuss as a group and fall back on one of the experimental models.
-
-\subsection{Team Contributions and Communication}
-
-As shown in the task tracker (Figure~\ref{fig:tasktracker}) and the communications table (Figure~\ref{fig:commstable}), all team members have been responsive and met the necessary deadlines for their work.
-
-% \begin{figure}[h]
-%   \begin{center}
-%   \includegraphics[width=1\textwidth]{Figs/tasktracker.png}
-%   \end{center}
-%   \caption{Updated Task Tracker}
-%   \label{fig:tasktracker}
-% \end{figure}
-
-% \begin{figure}[h]
-%   \begin{center}
-%   \includegraphics[width=1\textwidth]{Figs/commstable.png}
-%   \end{center}
-%   \caption{Team communication and contributions}
-%   \label{fig:commstable}
-% \end{figure}
-
-\section{Notable Contribution}
-
-\subsection{Data Processing}
+\section{Data Processing}
 The main data used for this project consists of the Gutenberg Poetry Corpus dataset in
 github \citep{gutenberg_dataset}.
 This dataset is publicly available and comes from a web scraper run in 2018.
@@ -372,42 +337,49 @@ The loss is calculated as the rate of accuracy between the model's prediction of
 
 \section{Qualitative Results}
 The model generates a mix of interesting or funny hakius, and incoherent outputs:
-\begin{itemize}
+
+\break
+
+\begin{multicols}{2}
 
 
-  \item \textit{"river as thou fledst \\
+  \textit{"river as thou fledst \\
   she glows within thy dreams where \\
   babe sad favorite"}
 
-  \item \textit{"water from the breeze \\
+  \textit{"water from the breeze \\
   there love dejected lies not \\
   here and could he dream"}
 
-  \item \textit{"grass and the moon is \\
+  \textit{"grass and the moon is \\
   the smoke of a broken tree \\
   is great for the sun"}
 
-  \item \textit{"ocean says she has \\
+  \textit{"ocean says she has \\
   to stir stainless nightingale \\
   but well they judge me”}
 
-  \item \textit{“car wolves reach of sighs \\
+
+  \columnbreak
+
+  \textit{“car wolves reach of sighs \\
   and coat an hurrah like strife \\
   truest mother round”}
 
-  \item \textit{“long does fairer by \\
+  \textit{“long does fairer by \\
   their heart yet cracks and half so \\
   late they bent him off”}
 
-  \item \textit{“when the death is no \\
+  \textit{“when the death is no \\
   knight ere for my dower and the \\
   vine and hints of that”}
 
-  \item \textit{"wake when spite of love \\
+  \textit{"wake when spite of love \\
   when that their light are red and \\
   many a star sweet”}
 
-\end{itemize}
+
+\end{multicols}
 
 As we can see, the model is able to generate haikus that could pass for human-written, however, it still generates
 incoherent haikus.
