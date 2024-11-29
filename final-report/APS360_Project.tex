@@ -59,12 +59,30 @@ Student\# 1007314728 \\
 \maketitle
 
 \begin{abstract}
-This is our final report for the APS360 Final Project.
-%######## APS360: Do not change the next line. This shows your Main body page count.
-Total Pages: \pageref{last_page}
+  This is our final report for the APS360 Final Project.
+  %######## APS360: Do not change the next line. This shows your Main body page count.
+  Total Pages: \pageref{last_page}
 \end{abstract}
 
 \section{Introduction}
+
+“Genuine poetry can communicate before it is understood” —T.S. Eliot
+
+In this project we are working to build a deep learning model to generate short poems of various topics.
+Our model is a haiku generator which can be prompted with the first line of a haiku and generate the content of subsequent lines, built on a gated recurrent unit (GRU) architecture.
+Poetry has long been regarded as a deep expression of emotion and human experience. Given that the model we construct will possess neither emotions nor intuition, we are interested to see whether our construction will be able to imitate human poetry, and if so to what degree. If the model is capable of producing compelling poems as output, this would contradict the idea that poetry requires emotion to produce, with implications for our understanding of the nature of creative work in general.
+
+\begin{figure}[h]
+  \begin{center}
+  \includegraphics[width=1\textwidth]{Figs/pipeline.png}
+  \end{center}
+  \caption{Basic Model Pipeline}
+  \label{fig:Basic Model Pipeline}
+\end{figure}
+
+Several ML approaches can be taken to text-generation. For instance, we compare our model to markov chains as a baseline. However, deep learning offers advantages that other statistical approaches cannot. As compared to simpler statistical models, neural nets can learn more abstract and general characteristics in the poems used for training. Given that a hallmark of good poetry is abstraction and unity around a sustaining theme, we believe deep learning is uniquely well-suited for the problem of poetry generation. 
+
+
 
 \section{Illustriaton}
 The high-level description of the model can be seen below in \ref{fig:model_diagram} .
@@ -104,28 +122,9 @@ Each one of these model's utilized different techniques. Whether the differences
 However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester.\\\\
 In the end we mostly ended up utilizing the work out of the University of Saarland, and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of utilizing a GRU, usinig individual words as outputs, and processing lines after generating them to fit syntax requirements. However, just like every other model, we used the main encoding-RNN with hidden state-decoding framework to generate individual lines.
 
-\section{Project Description}
 
-Project Description
-“Genuine poetry can communicate before it is understood” —T.S. Eliot
-In this project we are working to build a deep learning model to generate short poems of various topics.
-Our model is a haiku generator which can be prompted with the first line of a haiku and generate the content of subsequent lines, built on an LSTM (long-short-term-memory) architecture.
-Poetry has long been regarded as a deep expression of emotion and human experience. Given that the model we construct will possess neither emotions nor intuition, we are interested to see whether our construction will be able to imitate human poetry, and if so to what degree. If the model is capable of producing compelling poems as output, this would contradict the idea that poetry requires emotion to produce, with implications for our understanding of the nature of creative work in general.
 
-% \begin{figure}[h]
-%   \begin{center}
-%   \includegraphics[width=1\textwidth]{Figs/pipeline.png}
-%   \end{center}
-%   \caption{Basic Model Pipeline}
-%   \label{fig:pipeline}
-% \end{figure}
 
-Several ML approaches can be taken to text-generation.
-For instance, we compare our model to markov chains as a baseline.
-However, deep learning offers advantages that other statistical approaches cannot.
-As compared to simpler statistical models, neural nets can learn more abstract and general characteristics in the poems used for training.
-Given that a hallmark of good poetry is abstraction and unity around a sustaining theme,
-we believe deep learning is uniquely well-suited for the problem of poetry generation.
 
 \section{Individual Contributions and Responsibilities}
 
