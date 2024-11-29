@@ -107,20 +107,12 @@ and the model would generate a haiku with the prompt as its starting point.
 \section{Background}
 Previous poetry generation models utilized Recurrent Neural Networks (RNN) with some form of memory limiting to generate poems off a large dataset.\\\\
 One model, created by researchers at the University of Saarland, utilized encoder decoder systems, as well as long short-term memory (LSTM) and Gated Recurrent Units (GRU) to address vanishing gradients, \citep{novikovaenglish}.\\\\
-Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) for encoding, one RNN for creating hidden context parameters,
-and another RNN with a separate weight vector for modifying the final output \citep{zhang2014chinese}.
-The output of this model was particularly compelling, with human ratings for the generated poems being over 75\% of the ratings given to human written poems.\\\\
-Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.
-This model’s poems were incredibly convincing, with 56\% of polled individuals believing the AI generated poems were written by humans.\\\\
-When focusing specifically on haikus, even a relatively basic model built by students at Stanford University was able to score well \citep{haikugeneration}.
-For this model human evaluators gave the AI generated haikus an average quality score that was over 80\% of the average score given to human poems. This model only used a single RNN with LSTM.
-Granted, the evaluations were only done by 8 individuals, but the strength of RNNs for this kind of task is evident.\\\\
+Another model, developed at the University of Edinburgh utilized multiple neural networks chained together, with a convolutional neural network (CNN) and multiple RNN for futher processing \citep{zhang2014chinese}.\\\\
+Another model, built at City, University of London, used syllables as the inputs and outputs of their RNN instead of words \citep{lewis2021syllable}.\\\\
+When focusing specifically on haikus, even a relatively basic RNN model built by students at Stanford University was able to score well \citep{haikugeneration}. Here, AI generated haikus were given a total score of 80\% of the human ones.\\\\
 Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}.
-This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met.
-It also enabled the user to specify emotional tone by encoding category preferences (happy, sad, etc.) into a weighted vector that was then used after generating a line to swap out words that didn’t fit the categories well with words that did.\\\\
-This was most effectively done when words were chosen based on word frequency from other poems that fit the specified category.
-This model also utilized a softmax function that truncates the least likely words from the sample space during generation, increasing the probability of likely words and drastically improving output.\\\\
-Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or the or the specific method they used to manage hidden states. Whether they used syllables as the their input output token, or whether they used words. Whether they forced the model to regenerate lines that didn't fit certain syntax requirements, used algorithms to swap out words after generating the lines, or simply left the lines as is. Each model had their own unique way of addressing the somewhat existential task of creating poetry. Even the specific methods used to normalize their logits or sample from their word space was varied. most of the models weren't even trying to write the same kind of poem.\\\\
+This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met, and swapped out words after generating lines to improve flow. This model also utilized a softmax function that truncates the least likely words from the sample space during generation, increasing the probability of likely words and drastically improving output.\\\\
+Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or in the specific method they used to manage hidden states, or in any other part of the model as a whole, each model had their own unique way of creating coherent output.\\\\ 
 However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester.\\\\
 In the end we mostly ended up utilizing the work out of the University of Saarland, and the 13th conference on language resources and evaluation. Our design was largely based on the frameworks used in their models, specifically in terms of utilizing a GRU, usinig individual words as outputs, and processing lines after generating them to fit syntax requirements. However, just like every other model, we used the main encoding-RNN with hidden state-decoding framework to generate individual lines.
 
@@ -338,7 +330,6 @@ The loss is calculated as the rate of accuracy between the model's prediction of
 \section{Qualitative Results}
 The model generates a mix of interesting or funny hakius, and incoherent outputs:
 
-\break
 
 \begin{multicols}{2}
 
