@@ -113,7 +113,7 @@ When focusing specifically on haikus, even a relatively basic RNN model built by
 Finally, a model presented at the 13th conference on language resources and evaluation found a large degree of success in constraining the output of neural networks to generate poems \citep{popescu2022constrained}. 
 This model forced the AI to repeatedly output lines of a poem until certain syntax requirements were met, and swapped out words after generating lines to improve flow. 
 Each one of these model's utilized different techniques. Whether the differences were in the way they encoded and decoded the inputs and outputs, or in the specific method they used to manage hidden states, or in any other part of the model as a whole, each model had their own unique way of creating coherent output. 
-However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester, with our final work utilizing a GRU, individual words as tokens, grammar checks to constrain the output.
+However, every model utilized some form of encoding and decoding the text, some RNN architecture with a hidden state to efficiently calculate gradients, some variant of softmax to normalize their output, and some probabilistic sampling to choose the next word. Many of the poems also implemented some algorithm to prevent individual lines of each poem from being incoherent. These principles are what guided our design as we developed our model throughout the semester, with our final work utilizing a GRU, individual words as tokens, and grammar checks to constrain the output.
 
 
 \section{Data Processing}
@@ -459,7 +459,7 @@ One of the challenges of this model is that it is difficult to quantitatively ev
 Introducing a more advanced evaluation architecture, such as a GAN, might be useful in future work.
 
 Despite this challenge, our results from surveying humans on haiku quality does suggest that our model was performing close to human levels at its best.
-This fact contributes to our team's evaluation that the project was successful overall, with many potential next-steps (automated editing, more advanced architectures, larger datasets) being available to improve model performance and versatility
+This fact contributes to our team's evaluation that the project was successful overall, with many potential next-steps (automated editing, more advanced architectures, larger datasets) being available to improve model performance and versatility.
 
 
 %\pagebreak
